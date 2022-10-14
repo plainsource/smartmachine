@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
     "changelog_uri"     => "https://github.com/plainsource/smartmachine/releases/tag/v#{s.version}",
     # "documentation_uri" => "https://plainsource.humanmind.me/smartmachine/api/v#{s.version}/",
     # "mailing_list_uri"  => "https://plainsource.humanmind.me/smartmachine/discuss",
-    "source_code_uri"   => "https://github.com/plainsource/smartmachine/tree/v#{s.version}/smartmachine"
+    "source_code_uri"   => "https://github.com/plainsource/smartmachine/tree/v#{s.version}"
   }
 
   s.add_dependency "net-ssh", "~> 6.1"
