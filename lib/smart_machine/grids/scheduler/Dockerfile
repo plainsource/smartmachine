@@ -1,7 +1,7 @@
 ARG SMARTMACHINE_VERSION
 
 FROM smartmachine:$SMARTMACHINE_VERSION
-LABEL maintainer="Timeboard <hello@timeboard.me>"
+LABEL maintainer="plainsource <plainsource@humanmind.me>"
 
 # Scheduler Essentials
 RUN apk add --update busybox-suid && \

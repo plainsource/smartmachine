@@ -14,9 +14,9 @@ Gem::Specification.new do |s|
 
   s.license     	= "AGPL-3.0-or-later"
 
-  s.author       	= "Gaurav Goel"
-  s.email       	= "gaurav@timeboard.me"
-  s.homepage    	= "https://github.com/timeboardorg/smartmachine"
+  s.author       	= "plainsource"
+  s.email       	= "plainsource@humanmind.me"
+  s.homepage    	= "https://github.com/plainsource/smartmachine"
 
   s.files        	= Dir["LICENSE.txt", "README.md", "bin/**/*", "bin/**/.keep", "lib/**/*", "lib/**/.keep"]
   s.require_path        = "lib"
@@ -27,11 +27,11 @@ Gem::Specification.new do |s|
 
   s.metadata		= {
     "homepage_uri"      => s.homepage,
-    "bug_tracker_uri"   => "https://github.com/timeboardorg/smartmachine/issues",
-    "changelog_uri"     => "https://github.com/timeboardorg/smartmachine/releases/tag/v#{s.version}",
-    # "documentation_uri" => "https://www.timeboard.org/about/software/smartmachine/api/v#{s.version}/",
-    # "mailing_list_uri"  => "https://www.timeboard.org/about/software/smartmachine/discuss",
-    "source_code_uri"   => "https://github.com/timeboardorg/smartmachine/tree/v#{s.version}/smartmachine"
+    "bug_tracker_uri"   => "https://github.com/plainsource/smartmachine/issues",
+    "changelog_uri"     => "https://github.com/plainsource/smartmachine/releases/tag/v#{s.version}",
+    # "documentation_uri" => "https://plainsource.humanmind.me/smartmachine/api/v#{s.version}/",
+    # "mailing_list_uri"  => "https://plainsource.humanmind.me/smartmachine/discuss",
+    "source_code_uri"   => "https://github.com/plainsource/smartmachine/tree/v#{s.version}/smartmachine"
   }
 
   s.add_dependency "net-ssh", "~> 6.1"
