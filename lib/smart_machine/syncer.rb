@@ -68,6 +68,9 @@ module SmartMachine
         'grids/mysql',
         'grids/mysql/***',
 
+        'grids/nextcloud',
+        'grids/nextcloud/***',
+
         'grids/nginx',
         'grids/nginx/certificates/***',
 
@@ -105,6 +108,7 @@ module SmartMachine
         'config/elasticsearch.yml',
         'config/minio.yml',
         'config/mysql.yml',
+        'config/nextcloud.yml',
         'config/prereceiver.yml',
         'config/redis.yml',
 

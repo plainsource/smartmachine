@@ -2,6 +2,7 @@ require 'smart_machine/commands/grid_commands/sub_thor'
 require 'smart_machine/commands/grid_commands/elasticsearch'
 require 'smart_machine/commands/grid_commands/minio'
 require 'smart_machine/commands/grid_commands/mysql'
+require 'smart_machine/commands/grid_commands/nextcloud'
 require 'smart_machine/commands/grid_commands/nginx'
 require 'smart_machine/commands/grid_commands/prereceiver'
 require 'smart_machine/commands/grid_commands/redis'
@@ -19,6 +20,9 @@ module SmartMachine
 
       desc "mysql", "Run mysql grid commands"
       subcommand "mysql", GridCommands::Mysql
+
+      desc "nextcloud", "Run nextcloud grid commands"
+      subcommand "nextcloud", GridCommands::Nextcloud
 
       desc "nginx", "Run nginx grid commands"
       subcommand "nginx", GridCommands::Nginx

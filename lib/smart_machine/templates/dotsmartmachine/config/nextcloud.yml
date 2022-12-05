@@ -1,0 +1,27 @@
+nextcloudone:
+  image: "nextcloud:25.0.1-apache"
+  host: "yournextcloudone.yourdomain.com"
+  admin_user: <%= SmartMachine.credentials.dig(:nextcloudone, :admin_user) %>
+  admin_password: <%= SmartMachine.credentials.dig(:nextcloudone, :admin_password) %>
+  mysql_host: mysqlone
+  mysql_port: 3306
+  mysql_user: <%= SmartMachine.credentials.dig(:nextcloudone, :mysql_user) %>
+  mysql_password: <%= SmartMachine.credentials.dig(:nextcloudone, :mysql_password) %>
+  mysql_database_name: <%= SmartMachine.credentials.dig(:nextcloudone, :mysql_database_name) %>
+  # redis_host: redisone
+  # redis_port: 6379
+  # redis_password: <%= SmartMachine.credentials.dig(:nextcloudone, :redis_password) %>
+
+# nextcloudtwo:
+#   image: "nextcloud:25.0.1-apache"
+#   host: "yournextcloudtwo.yourdomain.com"
+#   admin_user: <%= SmartMachine.credentials.dig(:nextcloudtwo, :admin_user) %>
+#   admin_password: <%= SmartMachine.credentials.dig(:nextcloudtwo, :admin_password) %>
+#   mysql_host: mysqlone
+#   mysql_port: 3306
+#   mysql_user: <%= SmartMachine.credentials.dig(:nextcloudtwo, :mysql_user) %>
+#   mysql_password: <%= SmartMachine.credentials.dig(:nextcloudtwo, :mysql_password) %>
+#   mysql_database_name: <%= SmartMachine.credentials.dig(:nextcloudtwo, :mysql_database_name) %>
+#   redis_host: redisone
+#   redis_port: 6379
+#   redis_password: <%= SmartMachine.credentials.dig(:nextcloudtwo, :redis_password) %>

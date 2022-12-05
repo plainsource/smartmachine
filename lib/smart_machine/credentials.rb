@@ -66,6 +66,12 @@ module SmartMachine
 			    database_name: #{SecureRandom.hex(8)}
 			  redisone:
 			    password: #{SecureRandom.hex(16)}
+			  nextcloudone:
+			    admin_user: #{SecureRandom.hex(8)}
+			    admin_password: #{SecureRandom.hex(16)}
+			    mysql_user: #{SecureRandom.hex(8)}
+			    mysql_password: #{SecureRandom.hex(16)}
+			    mysql_database_name: #{SecureRandom.hex(8)}
 			YAML
     end
 
