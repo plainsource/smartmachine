@@ -71,6 +71,7 @@ module SmartMachine
       def downer
         # Disconnecting networks
         system("docker network disconnect nginx-network #{@name}")
+        system("docker network disconnect #{@mysql_host}-network #{@name}")
 
         # Stopping & Removing containers - in reverse order
         print "-----> Stopping container #{@name} ... "
