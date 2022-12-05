@@ -8,7 +8,6 @@ module SmartMachine
       @machine = SmartMachine::Machine.new
 
       @gem_cache_dir = Gem::Specification.find_by_name("smartmachine").cache_dir
-      @gem_cache_dir = "../smartmachine/pkg"
 
       if platform_on_machine?(os: "linux", distro_name: "debian")
         @docker_gid = "getent group docker | cut -d: -f3"
