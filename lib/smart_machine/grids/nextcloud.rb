@@ -54,7 +54,7 @@ module SmartMachine
           "#{@image}"
         ]
         if system(command.compact.join(" "), out: File::NULL)
-          system("docker network connect mysql-network #{@name}")
+          system("docker network connect #{@mysql_host}-network #{@name}")
 
           puts "done"
           puts "-----> Starting container #{@name} ... "
