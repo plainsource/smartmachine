@@ -1,5 +1,6 @@
 require 'smart_machine/logger'
 require "active_support/inflector"
+require 'active_support/core_ext/string/filters'
 
 module SmartMachine
   class Base
