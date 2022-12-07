@@ -5,13 +5,18 @@ module SmartMachine
         config = SmartMachine.config.grids.redis.dig(name.to_sym)
         raise "redis config for #{name} not found." unless config
 
+        @image = config.dig(:image)
         @port = config.dig(:port)
         @password = config.dig(:password)
         @appendonly = config.dig(:appendonly)
         @maxmemory = config.dig(:maxmemory)
         @maxmemory_policy = config.dig(:maxmemory_policy)
-        @modules = config.dig(:modules)&.map { |module_name| "--loadmodule /usr/lib/redis/modules/#{module_name}.so" } || []
-        @modules.push("Plugin /var/opt/redislabs/modules/rg/plugin/gears_python.so")
+        if @image.start_with?("redislabs/redismod")
+          @modules = config.dig(:modules)&.map { |module_name| "--loadmodule /usr/lib/redis/modules/#{module_name}.so" } || []
+          @modules.push("Plugin /var/opt/redislabs/modules/rg/plugin/gears_python.so")
+        else
+          @modules = []
+        end
 
         @name = name.to_s
         @home_dir = File.expand_path('~')
@@ -39,7 +44,7 @@ module SmartMachine
           "--volume='#{@home_dir}/smartmachine/grids/redis/#{@name}/data:/data'",
           "--restart='always'",
           "--network='#{@name}-network'",
-          "redislabs/redismod:latest --port #{@port} --requirepass #{@password} --appendonly #{@appendonly} --maxmemory #{@maxmemory} --maxmemory-policy #{@maxmemory_policy} #{@modules.join(' ')}"
+          "#{@image} --port #{@port} --requirepass #{@password} --appendonly #{@appendonly} --maxmemory #{@maxmemory} --maxmemory-policy #{@maxmemory_policy} #{@modules.join(' ')}".squish
         ]
         if system(command.compact.join(" "), out: File::NULL)
           puts "done"

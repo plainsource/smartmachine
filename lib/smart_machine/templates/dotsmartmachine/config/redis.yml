@@ -1,12 +1,17 @@
+# For redis modules you need to use the image redislabs/redismod:latest
+# https://hub.docker.com/r/redislabs/redismod
+
 redisone:
+  image: "redis:6.2.6-alpine3.15"
   port: 6379
   password: <%= SmartMachine.credentials.dig(:redisone, :password) %>
   appendonly: "yes"
   maxmemory: 250MB
   maxmemory_policy: allkeys-lfu
-  modules: []
+  # modules: []
 
 # redistwo:
+#   image: "redis:6.2.6-alpine3.15"
 #   port: 6380
 #   password: <%= SmartMachine.credentials.dig(:redistwo, :password) %>
 #   appendonly: "yes"
