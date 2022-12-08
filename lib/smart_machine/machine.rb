@@ -82,7 +82,7 @@ module SmartMachine
       commands = [
         "sudo touch /etc/sysctl.d/99-smartmachine.conf",
         "echo -e '#{sysctl_lines.join('\n')}' | sudo tee /etc/sysctl.d/99-smartmachine.conf",
-        "sudo sysctl -p"
+        "sudo sysctl -p /etc/sysctl.d/99-smartmachine.conf"
       ]
       run_on_machine(commands: commands)
 
