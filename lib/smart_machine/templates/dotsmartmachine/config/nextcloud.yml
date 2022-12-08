@@ -8,9 +8,9 @@ nextcloudone:
   mysql_user: <%= SmartMachine.credentials.dig(:nextcloudone, :mysql_user) %>
   mysql_password: <%= SmartMachine.credentials.dig(:nextcloudone, :mysql_password) %>
   mysql_database_name: <%= SmartMachine.credentials.dig(:nextcloudone, :mysql_database_name) %>
-  # redis_host: redisone
-  # redis_port: 6379
-  # redis_password: <%= SmartMachine.credentials.dig(:nextcloudone, :redis_password) %>
+  redis_host: redisone
+  redis_port: 6379
+  redis_password: <%= SmartMachine.credentials.dig(:redisone, :password) %>
 
 # nextcloudtwo:
 #   image: "nextcloud:25.0.1-apache"
