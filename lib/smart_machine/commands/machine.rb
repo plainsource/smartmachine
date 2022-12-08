@@ -3,6 +3,14 @@ module SmartMachine
     class Machine < Thor
       include Utilities
 
+      desc "setup", "Initial setup of the machine"
+      def setup
+        inside_machine_dir do
+          machine = SmartMachine::Machine.new
+          machine.setup
+        end
+      end
+
       desc "ssh", "SSH into the machine"
       def ssh
         inside_machine_dir do

@@ -49,11 +49,6 @@ module SmartMachine
       puts "New machine #{name} has been created."
     end
 
-    def initial_setup
-      getting_started
-      securing_your_server
-    end
-
     def run_on_machine(commands:)
       commands = Array(commands).flatten
       ssh = SmartMachine::SSH.new
@@ -62,9 +57,35 @@ module SmartMachine
       status[:exit_code] == 0
     end
 
+    def setup
+      getting_started
+      securing_your_server
+    end
+
     private
 
     def getting_started
+      run_on_machine(commands: "sudo apt update && sudo apt upgrade")
+
+      sysctl_lines = []
+      # sysctl_lines.push('# KVM uses this.')
+      # sysctl_lines.push('# These lines should only be activated for VM hosts and not for VM guests.')
+      # sysctl_lines.push('# When getting a VM from a service provider, you will usually get a VM guest and not a VM host and hence these lines should not be added.')
+      # sysctl_lines.push('# Prevent bridged traffic from being processed by iptables rules.')
+      # sysctl_lines.push('net.bridge.bridge-nf-call-ip6tables=0')
+      # sysctl_lines.push('net.bridge.bridge-nf-call-iptables=0')
+      # sysctl_lines.push('net.bridge.bridge-nf-call-arptables=0')
+      sysctl_lines.push('# Redis uses this.')
+      sysctl_lines.push('vm.overcommit_memory=1')
+      sysctl_lines.push('# Elasticsearch uses this.')
+      sysctl_lines.push('vm.max_map_count=262144')
+      commands = [
+        "sudo touch /etc/sysctl.d/99-smartmachine.conf",
+        "echo -e '#{sysctl_lines.join('\n')}' | sudo tee /etc/sysctl.d/99-smartmachine.conf",
+        "sudo sysctl -p"
+      ]
+      run_on_machine(commands: commands)
+
       # apt install locales-all
 
       # puts 'You may be prompted to make a menu selection when the Grub package is updated on Ubuntu. If prompted, select keep the local version currently installed.'
