@@ -56,6 +56,11 @@ module SmartMachine
         if system(command.compact.join(" "), out: File::NULL)
           system("docker network connect #{@mysql_host}-network #{@name}")
 
+          # This is needed to set the correct file permissions for redis-session.ini file inside the container.
+          FileUtils.touch("#{@home_dir}/machine/grids/nextcloud/#{@name}/redis-session.ini")
+          system("docker cp #{@home_dir}/machine/grids/nextcloud/#{@name}/redis-session.ini #{@name}:/usr/local/etc/php/conf.d/redis-session.ini")
+          FileUtils.rm("#{@home_dir}/machine/grids/nextcloud/#{@name}/redis-session.ini")
+
           puts "done"
           puts "-----> Starting container #{@name} ... "
           if system("docker start #{@name}", out: File::NULL)
