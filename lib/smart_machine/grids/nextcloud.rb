@@ -38,7 +38,6 @@ module SmartMachine
           "--env NEXTCLOUD_TRUSTED_DOMAINS=#{@host}",
           "--env NEXTCLOUD_ADMIN_USER=#{@admin_user}",
           "--env NEXTCLOUD_ADMIN_PASSWORD=#{@admin_password}",
-          "--env OVERWRITEPROTOCOL=https",
           "--env MYSQL_HOST=#{@mysql_host}:#{@mysql_port}",
           "--env MYSQL_USER=#{@mysql_user}",
           "--env MYSQL_PASSWORD=#{@mysql_password}",
