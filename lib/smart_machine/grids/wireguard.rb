@@ -7,6 +7,7 @@ module SmartMachine
 
         @image = config.dig(:image)
         @host = config.dig(:host)
+        @peers = config.dig(:peers)
 
         @name = name.to_s
         @home_dir = File.expand_path('~')
@@ -37,7 +38,7 @@ module SmartMachine
           "--env TZ=Etc/UTC",
           # "--env SERVERURL=wireguard.domain.com",
           # "--env SERVERPORT=51820",
-          # "--env PEERS=1",
+          @peers.blank? ? nil : "--env PEERS=#{@peers}",
           # "--env PEERDNS=auto",
           # "--env INTERNAL_SUBNET=10.13.13.0",
           # "--env ALLOWEDIPS=0.0.0.0/0",

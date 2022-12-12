@@ -1,3 +1,4 @@
 wireguardone:
   image: "linuxserver/wireguard:latest"
   host: "yourwireguardone.yourdomain.com"
+  peers: 1
