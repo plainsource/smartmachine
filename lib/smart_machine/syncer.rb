@@ -85,6 +85,9 @@ module SmartMachine
 
         'grids/solr',
         'grids/solr/solr/***',
+
+        'grids/wireguard',
+        'grids/wireguard/***',
       ]
       files.join(',')
     end
@@ -111,6 +114,7 @@ module SmartMachine
         'config/nextcloud.yml',
         'config/prereceiver.yml',
         'config/redis.yml',
+        'config/wireguard.yml',
 
         'grids',
 
