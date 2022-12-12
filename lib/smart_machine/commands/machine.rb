@@ -1,7 +1,13 @@
+require 'smart_machine/commands/machine_commands/sub_thor'
+require 'smart_machine/commands/machine_commands/kvm'
+
 module SmartMachine
   module Commands
     class Machine < Thor
       include Utilities
+
+      desc "kvm", "Run kvm machine commands"
+      subcommand "kvm", MachineCommands::Kvm
 
       desc "setup", "Initial setup of the machine"
       def setup
