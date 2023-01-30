@@ -19,10 +19,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends lsb-release && 
     apt-get update
 
 # Essentials
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
 	docker-ce-cli \
-	rsync \
-    && rm -rf /var/lib/apt/lists/*
+	rsync && \
+    rm -rf /var/lib/apt/lists/*
 
 # smartmachine gem
 ARG SMARTMACHINE_VERSION
