@@ -1,4 +1,4 @@
-FROM ruby:2.7.0-alpine3.11
+FROM ruby:2.7.7-bullseye
 LABEL maintainer="plainsource <plainsource@humanmind.me>"
 
 # User
@@ -11,13 +11,18 @@ RUN sed -i "s/$DOCKER_GID/998/" /etc/group && \
 	adduser --disabled-password --gecos "" --uid "$USER_UID" "$USER_NAME" && \
 	addgroup --gid "$DOCKER_GID" "$DOCKER_GNAME" && adduser "$USER_NAME" "$DOCKER_GNAME"
 
+# Add Docker Repository for Debian
+RUN apt-get update && apt-get install -y --no-install-recommends lsb-release && \
+    mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update
+
 # Essentials
-RUN apk add --update build-base && \
-	apk add --update xz && \
-	apk add --update docker && \
-	apk add --update git && \
-	apk add --update rsync && \
-    rm -rf /var/cache/apk/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	docker-ce-cli \
+	rsync \
+    && rm -rf /var/lib/apt/lists/*
 
 # smartmachine gem
 ARG SMARTMACHINE_VERSION
