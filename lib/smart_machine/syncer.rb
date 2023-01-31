@@ -80,9 +80,6 @@ module SmartMachine
         'grids/redis',
         'grids/redis/***',
 
-        'grids/scheduler',
-        'grids/scheduler/crontabs/***',
-
         'grids/solr',
         'grids/solr/solr/***',
       ]
@@ -120,10 +117,6 @@ module SmartMachine
         'grids/nginx/htpasswd/***',
         'grids/nginx/fastcgi.conf',
         'grids/nginx/nginx.tmpl',
-
-        'grids/scheduler',
-        'grids/scheduler/crontabs',
-        'grids/scheduler/crontabs/.keep',
 
         'grids/solr',
         'grids/solr/solr',

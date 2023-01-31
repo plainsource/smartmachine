@@ -50,13 +50,9 @@ Add your credentials using:
 
     $ smartmachine credentials:edit
 
-Add your environment details using: - Coming Soon
+Add your config details with your favourite editor (here emacs is shown):
 
-    $ smartmachine environment:edit
-
-Add your users using:
-
-    $ smartmachine grid nginx users:edit
+    $ emacs ./config
 
 Install docker, and add UFW rules for Docker if specified at the end of installation.
 
@@ -110,14 +106,6 @@ Lets you run redis server instance for cache storage and job queueing.
 
     $ smartmachine grid redis up
     $ smartmachine grid redis down
-
-#### 6. Scheduler Grid - Coming Soon
-Lets you setup scheduling services like database backups, etc.
-
-    $ smartmachine grid scheduler install
-    $ smartmachine grid scheduler up
-    $ smartmachine grid scheduler down
-    $ smartmachine grid scheduler uninstall
 
 ### Setup Your Apps
 

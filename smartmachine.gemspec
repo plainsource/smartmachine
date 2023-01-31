@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.require_path        = "lib"
 
   s.bindir              = "exe"
-#  s.executables 	= %w(buildpacker prereceiver scheduler smartmachine smartrunner)
+#  s.executables 	= %w(buildpacker prereceiver smartmachine smartrunner)
   s.executables 	= ["smartmachine"]
 
   s.metadata		= {

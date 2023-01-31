@@ -29,7 +29,6 @@ require 'smart_machine/grids/nextcloud'
 require 'smart_machine/grids/nginx'
 require 'smart_machine/grids/prereceiver'
 require 'smart_machine/grids/redis'
-# require 'smart_machine/grids/scheduler'
 # require 'smart_machine/grids/solr'
 
 module SmartMachine
