@@ -117,8 +117,8 @@ module SmartMachine
 	      rm -rf /var/lib/apt/lists/* && \
 	      gem install bundler -v 2.1.4
 
+	  EXPOSE 80
 	  STOPSIGNAL SIGUSR1
-
 	  CMD ["haproxy", "-W", "-db", "-f", "/etc/haproxy/haproxy.cfg"]
         DOCKERFILE
 
