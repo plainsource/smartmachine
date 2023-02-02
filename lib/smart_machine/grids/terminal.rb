@@ -19,7 +19,8 @@ module SmartMachine
           command = [
             "docker image build -t #{@image}",
             "--build-arg SMARTMACHINE_VERSION=#{SmartMachine.version}",
-            "-<<'EOF'\n#{dockerfile}EOF"
+            "-f- #{SmartMachine.config.gem_dir}/lib/smart_machine/grids/terminal",
+            "<<'EOF'\n#{dockerfile}EOF"
           ]
           if system(command.join(" "), out: File::NULL)
             puts "done"
@@ -111,11 +112,14 @@ module SmartMachine
 	      \
 	      apt-get install -y --no-install-recommends haproxy && \
 	      mkdir -p /run/haproxy && \
+	      mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.original && \
 	      \
 	      apt-get install -y --no-install-recommends %<packages>s && \
 	      \
 	      rm -rf /var/lib/apt/lists/* && \
 	      gem install bundler -v 2.1.4
+
+	  COPY haproxy.cfg /etc/haproxy
 
 	  EXPOSE 80
 	  STOPSIGNAL SIGUSR1
