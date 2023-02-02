@@ -14,7 +14,7 @@ module SmartMachine
     private
 
     def grids
-      @grids ||= OpenStruct.new(elasticsearch: elasticsearch, minio: minio, mysql: mysql, nextcloud: nextcloud, prereceiver: prereceiver, redis: redis)
+      @grids ||= OpenStruct.new(elasticsearch: elasticsearch, minio: minio, mysql: mysql, nextcloud: nextcloud, prereceiver: prereceiver, redis: redis, terminal: terminal)
     end
 
     def elasticsearch
@@ -78,6 +78,17 @@ module SmartMachine
         deserialize(IO.binread("config/redis.yml")).deep_symbolize_keys
       elsif File.exist? "#{File.expand_path('~')}/machine/config/redis.yml"
         deserialize(IO.binread("#{File.expand_path('~')}/machine/config/redis.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
+
+    def terminal
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/terminal.yml always exists
+      if File.exist? "config/terminal.yml"
+        deserialize(IO.binread("config/terminal.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/terminal.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/terminal.yml")).deep_symbolize_keys
       else
         {}
       end

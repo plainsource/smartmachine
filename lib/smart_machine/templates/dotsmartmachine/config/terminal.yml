@@ -1,0 +1,7 @@
+terminalone:
+  host: "yourterminalone.yourdomain.com"
+  packages: ["emacs-nox"]
+
+# terminaltwo:
+#   host: "yourterminaltwo.yourdomain.com"
+#   packages: ["emacs-nox"]

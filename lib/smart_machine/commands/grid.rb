@@ -6,6 +6,7 @@ require 'smart_machine/commands/grid_commands/nextcloud'
 require 'smart_machine/commands/grid_commands/nginx'
 require 'smart_machine/commands/grid_commands/prereceiver'
 require 'smart_machine/commands/grid_commands/redis'
+require 'smart_machine/commands/grid_commands/terminal'
 
 module SmartMachine
   module Commands
@@ -32,6 +33,9 @@ module SmartMachine
 
       desc "redis", "Run redis grid commands"
       subcommand "redis", GridCommands::Redis
+
+      desc "terminal", "Run terminal grid commands"
+      subcommand "terminal", GridCommands::Terminal
     end
   end
 end

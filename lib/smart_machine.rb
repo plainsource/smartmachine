@@ -30,6 +30,7 @@ require 'smart_machine/grids/nginx'
 require 'smart_machine/grids/prereceiver'
 require 'smart_machine/grids/redis'
 # require 'smart_machine/grids/solr'
+require 'smart_machine/grids/terminal'
 
 module SmartMachine
   class Error < StandardError; end
