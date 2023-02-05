@@ -94,12 +94,16 @@
         uwsgi_pass {{ trim .Proto }}://{{ trim .Upstream }};
         {{- else if eq .Proto "fastcgi" }}
         root {{ trim .VhostRoot }};
-        include fastcgi_params;
+        include fastcgi.conf;
         fastcgi_pass {{ trim .Upstream }};
         {{- else if eq .Proto "grpc" }}
         grpc_pass {{ trim .Proto }}://{{ trim .Upstream }};
         {{- else }}
-        proxy_pass {{ trim .Proto }}://{{ trim .Upstream }}{{ trim .Dest }};
+	set {{`$proxy_pass_url`}} {{ trim .Proto }}://{{ trim .Upstream }}{{ trim .Dest }};
+	if ({{`$cookie_appenv`}}) {
+	   set {{`$proxy_pass_url`}} {{ trim .Proto }}://{{`$cookie_appenv`}}.{{ trim .Upstream }}{{ trim .Dest }};
+	}
+        proxy_pass {{`$proxy_pass_url`}};
         {{- end }}
 
         {{- if (exists (printf "/etc/nginx/htpasswd/%s" .Host)) }}
@@ -235,6 +239,10 @@ gzip_types text/plain text/css application/javascript application/json applicati
 log_format vhost '{{ or $globals.Env.LOG_FORMAT "$host $remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\" \"$upstream_addr\"" }}';
 
 access_log off;
+server_tokens off;
+
+# Default is client_max_body_size 1M
+client_max_body_size 1M;
 
 {{- template "ssl_policy" (dict "ssl_policy" $globals.ssl_policy) }}
 error_log /dev/stderr;
