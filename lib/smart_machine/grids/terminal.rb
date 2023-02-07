@@ -7,7 +7,10 @@ module SmartMachine
 
         @image = "smartmachine/terminal:#{SmartMachine.version}"
         @host = config.dig(:host)
+        @frontend = config.dig(:frontend)
         @packages = config.dig(:packages)
+        @username = config.dig(:username)
+        @password = config.dig(:password)
 
         @name = name.to_s
         @home_dir = File.expand_path('~')
@@ -51,7 +54,7 @@ module SmartMachine
 
       def uper
         if system("docker image inspect #{@image}", [:out, :err] => File::NULL)
-          FileUtils.mkdir_p("#{@home_dir}/machine/grids/terminal/#{@name}/home")
+          FileUtils.mkdir_p("#{@home_dir}/machine/grids/terminal/#{@name}/backups")
 
           # Creating & Starting containers
           print "-----> Creating container #{@name} ... "
@@ -60,10 +63,18 @@ module SmartMachine
             "docker create",
             "--name='#{@name}'",
             "--env VIRTUAL_HOST=#{@host}",
+            "--env VIRTUAL_PATH=#{@frontend}",
+            "--env VIRTUAL_PORT=80",
             "--env LETSENCRYPT_HOST=#{@host}",
             "--env LETSENCRYPT_EMAIL=#{SmartMachine.config.sysadmin_email}",
             "--env LETSENCRYPT_TEST=false",
-            "--volume='#{@home_dir}/smartmachine/grids/terminal/#{@name}/home:/home'",
+            "--env CONTAINER_NAME='#{@name}'",
+            "--env PACKAGES=#{@packages.join(' ')}",
+            "--env USERNAME=#{@username}",
+            "--env PASSWORD=#{@password}",
+            "--volume='#{@name}-home:/home'",
+            "--volume='#{@home_dir}/smartmachine/grids/terminal/#{@name}/backups:/root/backups'",
+            "--init",
             "--restart='always'",
             "--network='nginx-network'",
             "#{@image}"
@@ -103,11 +114,14 @@ module SmartMachine
 
       private
 
-      # \
-      # curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-      # echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-      # apt-get install -y --no-install-recommends nodejs yarn && \
-      # yarn global add wetty && \
+      # openssh-server
+      # sshd needs rsyslog to output /var/log/auth.log.
+      # imklog module is commented in rsyslog.conf because rsyslog does not
+      # have privileges to run it and hence throws error on startup.
+      #
+      # fail2ban
+      # fail2ban needs sshd to output /var/log/auth.log.
+      # Otherwise it cannot start the sshd jail.
       def dockerfile
         file = <<~'DOCKERFILE'
           ARG SMARTMACHINE_VERSION
@@ -117,23 +131,47 @@ module SmartMachine
 
 	  RUN apt-get update && \
 	      \
+	      apt-get install -y --no-install-recommends sudo && \
+	      \
+	      apt-get install -y --no-install-recommends rsyslog openssh-server && \
+	      mkdir -p /run/sshd && \
+	      sed -i'.original' '/#Port 22/a Port 2223' /etc/ssh/sshd_config && \
+	      sed -i '/#AddressFamily any/a AddressFamily inet' /etc/ssh/sshd_config && \
+	      sed -i '/#PermitRootLogin prohibit-password/a PermitRootLogin no' /etc/ssh/sshd_config && \
+	      sed -i '/imklog/s/^/#/' /etc/rsyslog.conf && \
+	      \
+	      apt-get install -y --no-install-recommends fail2ban sendmail-bin sendmail && \
+	      cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local && \
+	      cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local && \
+	      sed -i'.original' 's/destemail = root@localhost/#destemail = root@localhost\ndestemail = %<sysadmin_email>s/' /etc/fail2ban/jail.local && \
+              sed -i 's/action = %<percent>s(action_)s/#action = %<percent>s(action_)s\naction = %<percent>s(action_mwl)s/' /etc/fail2ban/jail.local && \
+	      sed -i 's/port    = ssh/#port    = ssh\nport    = 2223/' /etc/fail2ban/jail.local && \
+	      \
 	      apt-get install -y --no-install-recommends haproxy && \
 	      mkdir -p /run/haproxy && \
 	      mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.original && \
 	      \
-	      apt-get install -y --no-install-recommends %<packages>s && \
+	      apt-get install -y --no-install-recommends cmake libtool libtool-bin emacs-nox && \
+	      mkdir -p /root/.emacs.d && \
+	      \
+	      apt-get install -y --no-install-recommends vim && \
 	      \
 	      rm -rf /var/lib/apt/lists/* && \
 	      gem install bundler -v 2.1.4
 
 	  COPY haproxy.cfg /etc/haproxy
+	  COPY init.el /root/.emacs.d/init.el
 
-	  EXPOSE 80
+	  COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+	  RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+	  ENTRYPOINT ["docker-entrypoint.sh"]
+
+	  EXPOSE 2223 80
 	  STOPSIGNAL SIGUSR1
 	  CMD ["haproxy", "-W", "-db", "-f", "/etc/haproxy/haproxy.cfg"]
         DOCKERFILE
 
-        format(file, "packages": @packages.join(' '))
+        format(file, "sysadmin_email": SmartMachine.config.sysadmin_email, "percent": '%')
       end
     end
   end

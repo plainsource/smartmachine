@@ -1,7 +1,13 @@
 terminalone:
   host: "yourterminalone.yourdomain.com"
-  packages: ["emacs-nox"]
+  frontend: "/frontend"
+  username: <%= SmartMachine.credentials.dig(:terminalone, :username) %>
+  password: <%= SmartMachine.credentials.dig(:terminalone, :password) %>
+  packages: []
 
 # terminaltwo:
 #   host: "yourterminaltwo.yourdomain.com"
-#   packages: ["emacs-nox"]
+#   frontend: "/frontend"
+#   username: <%= SmartMachine.credentials.dig(:terminaltwo, :username) %>
+#   password: <%= SmartMachine.credentials.dig(:terminaltwo, :password) %>
+#   packages: []

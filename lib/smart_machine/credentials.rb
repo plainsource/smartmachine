@@ -72,6 +72,9 @@ module SmartMachine
 			    mysql_user: #{SecureRandom.hex(8)}
 			    mysql_password: #{SecureRandom.hex(16)}
 			    mysql_database_name: #{SecureRandom.hex(8)}
+			  terminalone:
+			    username: #{SecureRandom.hex(8)}
+			    password: #{SecureRandom.hex(16)}
 			YAML
     end
 
