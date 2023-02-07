@@ -11,6 +11,8 @@ module SmartMachine
 
         @name = name.to_s
         @home_dir = File.expand_path('~')
+
+        @wetty = Wetty.new(name: "#{@name}-wetty", host: @host, ssh_host: @name)
       end
 
       def installer
@@ -71,6 +73,8 @@ module SmartMachine
             puts "-----> Starting container #{@name} ... "
             if system("docker start #{@name}", out: File::NULL)
               puts "done"
+
+              @wetty.uper
             else
               raise "Error: Could not start container: #{@name}"
             end
@@ -84,6 +88,9 @@ module SmartMachine
 
       def downer
         # Stopping & Removing containers - in reverse order
+
+        @wetty.downer
+
         print "-----> Stopping container #{@name} ... "
         if system("docker stop '#{@name}'", out: File::NULL)
           puts "done"
