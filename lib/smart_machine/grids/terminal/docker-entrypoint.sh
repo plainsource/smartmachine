@@ -5,7 +5,7 @@ set -e
 service rsyslog start && service ssh start
 
 # fail2ban
-#fail2ban-client start
+fail2ban-client start
 
 # haproxy
 #haproxy -W -db -f /etc/haproxy/haproxy.cfg
