@@ -69,7 +69,7 @@ module SmartMachine
             "--env LETSENCRYPT_EMAIL=#{SmartMachine.config.sysadmin_email}",
             "--env LETSENCRYPT_TEST=false",
             "--env CONTAINER_NAME='#{@name}'",
-            "--env PACKAGES=#{@packages.join(' ')}",
+            "--env PACKAGES='#{@packages.join(' ')}'",
             "--env USERNAME=#{@username}",
             "--env PASSWORD=#{@password}",
             "--volume='#{@name}-home:/home'",
@@ -162,9 +162,9 @@ module SmartMachine
 	  COPY haproxy.cfg /etc/haproxy
 	  COPY init.el /root/.emacs.d/init.el
 
-	  COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-	  RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-	  ENTRYPOINT ["docker-entrypoint.sh"]
+	  COPY entrypoint.rb /usr/local/bin/entrypoint.rb
+	  RUN chmod +x /usr/local/bin/entrypoint.rb
+	  ENTRYPOINT ["entrypoint.rb"]
 
 	  EXPOSE 2223 80
 	  STOPSIGNAL SIGUSR1
