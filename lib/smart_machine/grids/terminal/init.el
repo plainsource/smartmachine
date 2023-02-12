@@ -265,7 +265,9 @@
 (use-package vterm
   :ensure t
   :config
-  (define-key vterm-mode-map (kbd "C-q") #'vterm-send-next-key))
+  (define-key vterm-mode-map (kbd "C-q") #'vterm-send-next-key)
+  :custom
+  (vterm-always-compile-module t))
 ;; Managing multiple vterm buffers in Emacs.
 (use-package multi-vterm
   :ensure t)
