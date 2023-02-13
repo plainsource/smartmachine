@@ -72,6 +72,7 @@ module SmartMachine
             "--env PACKAGES='#{@packages.join(' ')}'",
             "--env USERNAME=#{@username}",
             "--env PASSWORD=#{@password}",
+            "--publish='2223:2223'", # TODO: Remove this published port and move it behind the reverse proxy when ready.
             "--volume='#{@name}-home:/home'",
             "--volume='#{@home_dir}/smartmachine/grids/terminal/#{@name}/backups:/root/backups'",
             "--init",
