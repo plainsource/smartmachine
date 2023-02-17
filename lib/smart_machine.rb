@@ -23,6 +23,7 @@ require 'smart_machine/buildpackers/buildpacker'
 require 'smart_machine/buildpackers/rails'
 
 require 'smart_machine/grids/elasticsearch'
+require 'smart_machine/grids/god'
 require 'smart_machine/grids/minio'
 require 'smart_machine/grids/mysql'
 require 'smart_machine/grids/nextcloud'

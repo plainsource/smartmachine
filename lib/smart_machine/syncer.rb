@@ -62,6 +62,9 @@ module SmartMachine
         'grids/elasticsearch',
         'grids/elasticsearch/***',
 
+        'grids/god',
+        'grids/god/***',
+
         'grids/minio',
         'grids/minio/***',
 
@@ -106,6 +109,7 @@ module SmartMachine
         'config/credentials.yml.enc',
         'config/environment.rb',
         'config/elasticsearch.yml',
+        'config/god.yml',
         'config/minio.yml',
         'config/mysql.yml',
         'config/nextcloud.yml',
