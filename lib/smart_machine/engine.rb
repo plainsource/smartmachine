@@ -99,7 +99,7 @@ module SmartMachine
 
     def dockerfile
       file = <<~'DOCKERFILE'
-        FROM ruby:2.7.7-bullseye
+        FROM ruby:%<smartmachine_ruby_version>s-bullseye
 	LABEL maintainer="plainsource <plainsource@humanmind.me>"
 
 	# User
