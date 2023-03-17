@@ -14,7 +14,7 @@ module SmartMachine
               "--build-arg SMARTMACHINE_VERSION=#{SmartMachine.version}",
               "--build-arg USER_UID=`id -u`",
               "--build-arg USER_NAME=`id -un`",
-              "#{SmartMachine.config.gem_dir}/lib/smart_machine/buildpackers/rails"
+              "-<<'EOF'\n#{dockerfile_rails}EOF"
             ]
             if system(command.join(" "), out: File::NULL)
               puts "done"
@@ -51,6 +51,54 @@ module SmartMachine
 
       def rails_image_name
         "smartmachine/buildpackers/rails:#{SmartMachine.version}"
+      end
+
+      def dockerfile_rails
+        file = <<~'DOCKERFILE'
+	  ARG SMARTMACHINE_VERSION
+
+	  FROM smartmachine/smartengine:$SMARTMACHINE_VERSION
+	  LABEL maintainer="plainsource <plainsource@humanmind.me>"
+
+	  RUN apt-get update && \
+	      apt-get install -y --no-install-recommends \
+	        # dependencies for ruby from https://github.com/rbenv/ruby-build/wiki#ubuntudebianmint
+                autoconf \
+                bison \
+                patch \
+                build-essential \
+                rustc \
+                libssl-dev \
+                libyaml-dev \
+                libreadline6-dev \
+                zlib1g-dev \
+                libgmp-dev \
+                libncurses5-dev \
+                libffi-dev \
+                libgdbm6 \
+                libgdbm-dev \
+                libdb-dev \
+                uuid-dev && \
+              # ruby on rails
+              curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+	      echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+	      apt-get update && \
+	      apt-get install -y --no-install-recommends \
+		  tzdata \
+		  nodejs \
+		  yarn \
+		  libmariadb-dev \
+		  libvips42 \
+		  ffmpeg \
+		  mupdf \
+		  mupdf-tools \
+		  poppler-utils && \
+              rm -rf /var/lib/apt/lists/*
+
+	  CMD ["smartmachine", "buildpacker", "packer", "rails"]
+        DOCKERFILE
+
+        format(file)
       end
 
       # These swapfile methods can be used (after required modification), when you need to make swapfile for more memory.

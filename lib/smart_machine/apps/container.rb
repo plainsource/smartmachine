@@ -26,6 +26,7 @@ module SmartMachine
           "--workdir /app",
           "--expose='3000'",
           "--volume='#{@home_dir}/smartmachine/config/environment.rb:#{@home_dir}/machine/config/environment.rb'",
+          "--volume='#{@home_dir}/smartmachine/apps/containers/#{@appname}/asdf:#{@home_dir}/.asdf'",
           "--volume='#{@home_dir}/smartmachine/apps/containers/#{@appname}/releases/#{@appversion}:/app'",
           "--volume='#{@home_dir}/smartmachine/apps/containers/#{@appname}/app/vendor/bundle:/app/vendor/bundle'",
           "--volume='#{@home_dir}/smartmachine/apps/containers/#{@appname}/app/public/assets:/app/public/assets'",

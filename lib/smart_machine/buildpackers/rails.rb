@@ -42,6 +42,7 @@ module SmartMachine
         FileUtils.mkdir_p("#{@container_path}/app/public/packs")
         FileUtils.mkdir_p("#{@container_path}/app/node_modules")
         FileUtils.mkdir_p("#{@container_path}/app/storage")
+        FileUtils.mkdir_p("#{@container_path}/asdf")
         FileUtils.mkdir_p("#{@container_path}/releases/#{@appversion}/vendor/bundle")
         FileUtils.mkdir_p("#{@container_path}/releases/#{@appversion}/public/assets")
         FileUtils.mkdir_p("#{@container_path}/releases/#{@appversion}/public/packs")
@@ -62,13 +63,15 @@ module SmartMachine
       def packer
         set_logger_formatter_arrow
 
+        # TODO: The exec of final process should be done only in the Manager#containerize_process! and should be removed from here.
+        # This method should only pack a fully functioning container and do nothing else.
         if File.exist? "tmp/smartmachine/packed"
           begin
             pid = File.read('tmp/smartmachine/packed').to_i
             Process.kill('QUIT', pid)
           rescue Errno::ESRCH # No such process
           end
-          exec "bundle", "exec", "puma", "--config", "config/puma.rb"
+          exec(user_bash("bundle exec puma --config config/puma.rb"))
         else
           if initial_setup? && bundle_install? && precompile_assets? && db_migrate? && test_web_server?
             logger.formatter = nil
@@ -89,18 +92,90 @@ module SmartMachine
       def initial_setup?
         logger.info "Performing initial setup ..."
 
-        exit_status = nil
+        set_logger_formatter_tabs
 
         # Fix for mysql2 gem to support sha256_password, until it is fixed in main mysql2 gem.
         # https://github.com/brianmario/mysql2/issues/1023
-        exit_status = system("mkdir -p ./lib/mariadb && ln -s /usr/lib/mariadb/plugin ./lib/mariadb/plugin")
-
-        if exit_status
-          return true
-        else
-          logger.error "Could not complete initial setup."
+        unless system("mkdir -p ./lib/mariadb && ln -s /usr/lib/mariadb/plugin ./lib/mariadb/plugin")
+          logger.error "Could not setup fix for mysql2 mariadb folders."
           return false
         end
+
+        # Install asdf
+        system("echo '\n# asdf version manager\nif [ -f \"$HOME/.asdf/asdf.sh\" ]; then\n    . \"$HOME/.asdf/asdf.sh\"\nfi\nif [ -f \"$HOME/.asdf/completions/asdf.bash\" ]; then\n    . \"$HOME/.asdf/completions/asdf.bash\"\nfi' >> ~/.profile", out: File::NULL)
+        unless system(user_bash("asdf --version"), [:out, :err] => File::NULL)
+          asdf_version = `git -c 'versionsort.suffix=-' ls-remote --exit-code --refs --sort='version:refname' --tags https://github.com/asdf-vm/asdf.git '*.*.*' | tail --lines=1 | cut --delimiter='/' --fields=3`.strip
+          logger.info "Installing asdf #{asdf_version}...\n"
+
+          # Clear all files inside .asdf dir including dot files.
+          system("rm -rf ~/.asdf/..?* ~/.asdf/.[!.]* ~/.asdf/*")
+          Open3.popen2e(user_bash("git -c advice.detachedHead=false clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch #{asdf_version}")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+
+          unless system(user_bash("asdf --version"), [:out, :err] => File::NULL)
+            logger.error "Could not install asdf.\n"
+            return false
+          end
+        end
+        logger.info "Using asdf " + `#{user_bash("asdf --version")}`.strip + "\n"
+
+        # Install ruby
+        ruby_version = `sed -n '/RUBY VERSION/{n;p}' Gemfile.lock`.strip.split(" ").last&.split("p")&.first
+        if ruby_version.nil? || ruby_version.empty?
+          logger.error "Could not find ruby version. Have you specified it explicitly in Gemfile and run bundle install?\n"
+          return false
+        end
+
+        unless `#{user_bash('ruby -e "puts RUBY_VERSION"')}`.strip == ruby_version
+          logger.info "Installing ruby v#{ruby_version}\n"
+
+          Open3.popen2e(user_bash("asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+          Open3.popen2e(user_bash("asdf plugin update ruby")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+          Open3.popen2e(user_bash("asdf install ruby #{ruby_version}")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+          Open3.popen2e(user_bash("asdf local ruby #{ruby_version}")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+
+          unless `#{user_bash('ruby -e "puts RUBY_VERSION"')}`.strip == ruby_version
+            logger.error "Could not install ruby with version #{ruby_version}. Please try another valid version that asdf supports.\n"
+            return false
+          end
+        end
+        logger.info "Using ruby v" + `#{user_bash('ruby -e "puts RUBY_VERSION"')}`.strip + "\n"
+
+        # Install bundler
+        bundler_version = `sed -n '/BUNDLED WITH/{n;p}' Gemfile.lock`.strip
+        if bundler_version.nil? || bundler_version.empty?
+          logger.error "Could not find bundler version. Please ensure BUNDLED_WITH section is present in your Gemfile.lock.\n"
+          return false
+        end
+
+        unless system(user_bash("gem list -i '^bundler$' --version #{bundler_version}"), out: File::NULL)
+          logger.info "Installing bundler v#{bundler_version}\n"
+
+          Open3.popen2e(user_bash("gem install --no-document bundler -v #{bundler_version}")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+
+          unless system(user_bash("gem list -i '^bundler$' --version #{bundler_version}"), out: File::NULL)
+            logger.error "Could not install bundler with version #{bundler_version}.\n"
+            return false
+          end
+        end
+        system("alias bundle='bundle _#{bundler_version}_'")
+        system("alias bundler='bundler _#{bundler_version}_'")
+        logger.info "Using bundler v" + bundler_version + "\n"
+
+        set_logger_formatter_arrow
+
+        return true
       end
 
       # Perform bundle install
@@ -109,13 +184,13 @@ module SmartMachine
 
         set_logger_formatter_tabs
 
-        unless system("bundle config set deployment 'true' && bundle config set clean 'true'")
+        unless system(user_bash("bundle config set --local deployment 'true' && bundle config set --local clean 'true'"))
           logger.error "Could not complete bundle config setting."
           return false
         end
 
         exit_status = nil
-        Open3.popen2e("bundle", "install") do |stdin, stdout_and_stderr, wait_thr|
+        Open3.popen2e(user_bash("bundle install")) do |stdin, stdout_and_stderr, wait_thr|
           stdout_and_stderr.each { |line| logger.info "#{line}" }
           exit_status = wait_thr.value.success?
         end
@@ -135,7 +210,7 @@ module SmartMachine
 
         set_logger_formatter_tabs
         exit_status = nil
-        Open3.popen2e("bundle", "exec", "rails", "assets:precompile") do |stdin, stdout_and_stderr, wait_thr|
+        Open3.popen2e(user_bash("bundle exec rails assets:precompile")) do |stdin, stdout_and_stderr, wait_thr|
           stdout_and_stderr.each { |line| logger.info "#{line}" }
           exit_status = wait_thr.value.success?
         end
@@ -157,7 +232,7 @@ module SmartMachine
 
         set_logger_formatter_tabs
         exit_status = nil
-        Open3.popen2e("bundle", "exec", "rails", "db:migrate") do |stdin, stdout_and_stderr, wait_thr|
+        Open3.popen2e(user_bash("bundle exec rails db:migrate")) do |stdin, stdout_and_stderr, wait_thr|
           stdout_and_stderr.each { |line| logger.info "#{line}" }
           exit_status = wait_thr.value.success?
         end
@@ -181,7 +256,7 @@ module SmartMachine
         FileUtils.rm_f("tmp/smartmachine/packed")
 
         # Spawn Process
-        pid = Process.spawn("bundle", "exec", "puma", "--config", "config/puma.rb", out: File::NULL)
+        pid = Process.spawn(user_bash("bundle exec puma --config config/puma.rb"), out: File::NULL)
         Process.detach(pid)
 
         # Sleep

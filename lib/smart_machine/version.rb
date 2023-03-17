@@ -26,7 +26,7 @@ module SmartMachine
   module RUBY_VERSION
     MAJOR = 2
     MINOR = 7
-    TINY  = 0
+    TINY  = 7
     PRE   = nil
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join(".")
