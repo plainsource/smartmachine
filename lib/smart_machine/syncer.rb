@@ -44,7 +44,7 @@ module SmartMachine
         "-e 'ssh -p #{SmartMachine.credentials.machine[:port]}'",
         "--rsync-path='smartengine syncer rsync'",
         "--delete",
-        "--include={#{files_list}}",
+        files_list.map { |regex| "--include='#{regex}'" }.join(" "),
         "--exclude=*"
       ]
 
@@ -86,7 +86,7 @@ module SmartMachine
         'grids/terminal',
         'grids/terminal/***',
       ]
-      files.join(',')
+      files
     end
 
     def push_files_list
@@ -128,7 +128,7 @@ module SmartMachine
 
         'tmp/***',
       ]
-      files.join(',')
+      files
     end
   end
 end
