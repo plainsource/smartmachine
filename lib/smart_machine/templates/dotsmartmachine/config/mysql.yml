@@ -1,5 +1,6 @@
 mysqlone:
   port: 3306
+  networks: networkone
   root_password: <%= SmartMachine.credentials.dig(:mysqlone, :root_password) %>
   username: <%= SmartMachine.credentials.dig(:mysqlone, :username) %>
   password: <%= SmartMachine.credentials.dig(:mysqlone, :password) %>
@@ -7,6 +8,7 @@ mysqlone:
 
 # mysqltwo:
 #   port: 3307
+#   networks: networkone
 #   root_password: <%= SmartMachine.credentials.dig(:mysqltwo, :root_password) %>
 #   username: <%= SmartMachine.credentials.dig(:mysqltwo, :username) %>
 #   password: <%= SmartMachine.credentials.dig(:mysqltwo, :password) %>

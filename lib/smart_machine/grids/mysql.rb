@@ -6,6 +6,7 @@ module SmartMachine
         raise "mysql config for #{name} not found." unless config
 
         @port = config.dig(:port)
+        @networks = Array(config.dig(:networks))
         @root_password = config.dig(:root_password)
         @username = config.dig(:username)
         @password = config.dig(:password)
@@ -48,6 +49,9 @@ module SmartMachine
           puts "done"
           puts "-----> Starting container #{@name} ... "
           if system("docker start #{@name}", out: File::NULL)
+            @networks.each do |network|
+              raise "Error: Could not connect container: #{network} - #{@name}" unless system("docker network connect #{network} #{@name}", out: File::NULL)
+            end
             puts "done"
           else
             raise "Error: Could not start the created #{@name} container"
@@ -59,6 +63,10 @@ module SmartMachine
 
       # Stopping & Removing containers - in reverse order
       def downer
+        @networks.each do |network|
+          raise "Error: Could not disconnect container: #{network} - #{@name}" unless system("docker network disconnect #{network} #{@name}", out: File::NULL)
+        end
+
         puts "-----> Stopping container #{@name} ... "
         if system("docker stop '#{@name}'", out: File::NULL)
           puts "done"
