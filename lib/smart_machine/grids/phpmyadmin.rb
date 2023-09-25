@@ -13,9 +13,11 @@ module SmartMachine
         @pma_controlhost = config.dig(:pma_controlhost)
         mysql_config = SmartMachine.config.grids.mysql.dig(@pma_controlhost&.to_sym)
         raise "phpmyadmin | mysql config for #{@pma_controlhost} not found." unless mysql_config
+        @mysql_config_root_password = mysql_config.dig(:root_password)
         @pma_controlport = mysql_config.dig(:port)
         @pma_controluser = mysql_config.dig(:username)
         @pma_controlpass = mysql_config.dig(:password)
+        @pma_pmadb = "phpmyadmin"
 
         @name = name.to_s
         @home_dir = File.expand_path('~')
@@ -27,6 +29,9 @@ module SmartMachine
         @networks.each do |network|
           raise "Error: Could not connect container: #{network} - #{@name}" unless system("docker network connect #{network} #{@name}", out: File::NULL)
         end
+
+        raise "Error: Could not setup database: #{@name}"    unless system(command_db_setup.compact.join(' '), out: File::NULL)
+        raise "Error: Could not setup tables: #{@name}"      unless system(command_db_tables_setup.compact.join(' '), out: File::NULL)
 
         puts "Created, Started & Connected container: #{@name}"
       end
@@ -55,7 +60,7 @@ module SmartMachine
           "--env PMA_CONTROLPORT=#{@pma_controlport}",
           "--env PMA_CONTROLUSER=#{@pma_controluser}",
           "--env PMA_CONTROLPASS=#{@pma_controlpass}",
-          '--env PMA_PMADB=phpmyadmin',
+          "--env PMA_PMADB=#{@pma_pmadb}",
           '--env PMA_QUERYHISTORYDB=true',
           '--env HIDE_PHP_VERSION=true',
           '--env PMA_ARBITRARY=1',
@@ -75,6 +80,24 @@ module SmartMachine
         end
 
         volumes.join(" ")
+      end
+
+      def command_db_setup
+        [
+          "docker exec -i #{@pma_controlhost}",
+          "bash -c \"exec mysql --defaults-extra-file=<(echo $'[client]\npassword='\"#{@mysql_config_root_password}\") -uroot --execute \\\"",
+          "CREATE DATABASE IF NOT EXISTS #{@pma_pmadb};",
+          "GRANT ALL PRIVILEGES ON #{@pma_pmadb}.* TO #{@pma_controluser}@'%';",
+          "\\\"\""
+        ]
+      end
+
+      def command_db_tables_setup
+        [
+          "docker cp #{@name}:/var/www/html/sql/create_tables.sql - | tar -xO |",
+          "docker exec -i #{@pma_controlhost} bash -c",
+          "\"exec mysql --defaults-extra-file=<(echo $'[client]\npassword='\"#{@mysql_config_root_password}\") -uroot\""
+        ]
       end
     end
   end
