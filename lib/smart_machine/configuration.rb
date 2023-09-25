@@ -8,7 +8,7 @@ module SmartMachine
     end
 
     def config
-      @config ||= OpenStruct.new(grids: grids)
+      @config ||= OpenStruct.new(grids: grids, network: network)
     end
 
     private
@@ -100,6 +100,17 @@ module SmartMachine
         deserialize(IO.binread("config/terminal.yml")).deep_symbolize_keys
       elsif File.exist? "#{File.expand_path('~')}/machine/config/terminal.yml"
         deserialize(IO.binread("#{File.expand_path('~')}/machine/config/terminal.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
+
+    def network
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/network.yml always exists
+      if File.exist? "config/network.yml"
+        deserialize(IO.binread("config/network.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/network.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/network.yml")).deep_symbolize_keys
       else
         {}
       end

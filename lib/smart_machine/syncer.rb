@@ -110,6 +110,7 @@ module SmartMachine
         'config/elasticsearch.yml',
         'config/minio.yml',
         'config/mysql.yml',
+        'config/network.yml',
         'config/nextcloud.yml',
         'config/phpmyadmin.yml',
         'config/prereceiver.yml',

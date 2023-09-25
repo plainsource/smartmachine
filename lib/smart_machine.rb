@@ -33,6 +33,8 @@ require 'smart_machine/grids/redis'
 require 'smart_machine/grids/terminal/wetty'
 require 'smart_machine/grids/terminal'
 
+require 'smart_machine/machines/network'
+
 module SmartMachine
   class Error < StandardError; end
 

@@ -1,0 +1,8 @@
+networkone:
+  driver: bridge
+
+networktwo:
+  driver: bridge
+
+# networkthree:
+#   driver: bridge
