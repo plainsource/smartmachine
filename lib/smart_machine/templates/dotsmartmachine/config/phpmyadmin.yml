@@ -1,0 +1,3 @@
+phpmyadminone:
+  image: "phpmyadmin:5.2.1"
+  host: "yourphpmyadminone.yourdomain.com"

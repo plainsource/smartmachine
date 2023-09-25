@@ -4,6 +4,7 @@ require 'smart_machine/commands/grid_commands/minio'
 require 'smart_machine/commands/grid_commands/mysql'
 require 'smart_machine/commands/grid_commands/nextcloud'
 require 'smart_machine/commands/grid_commands/nginx'
+require 'smart_machine/commands/grid_commands/phpmyadmin'
 require 'smart_machine/commands/grid_commands/prereceiver'
 require 'smart_machine/commands/grid_commands/redis'
 require 'smart_machine/commands/grid_commands/terminal'
@@ -27,6 +28,9 @@ module SmartMachine
 
       desc "nginx", "Run nginx grid commands"
       subcommand "nginx", GridCommands::Nginx
+
+      desc "phpmyadmin", "Run phpmyadmin grid commands"
+      subcommand "phpmyadmin", GridCommands::Phpmyadmin
 
       desc "prereceiver", "Run prereceiver grid commands"
       subcommand "prereceiver", GridCommands::Prereceiver

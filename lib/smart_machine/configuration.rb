@@ -14,7 +14,7 @@ module SmartMachine
     private
 
     def grids
-      @grids ||= OpenStruct.new(elasticsearch: elasticsearch, minio: minio, mysql: mysql, nextcloud: nextcloud, prereceiver: prereceiver, redis: redis, terminal: terminal)
+      @grids ||= OpenStruct.new(elasticsearch: elasticsearch, minio: minio, mysql: mysql, nextcloud: nextcloud, phpmyadmin: phpmyadmin, prereceiver: prereceiver, redis: redis, terminal: terminal)
     end
 
     def elasticsearch
@@ -56,6 +56,17 @@ module SmartMachine
         deserialize(IO.binread("config/nextcloud.yml")).deep_symbolize_keys
       elsif File.exist? "#{File.expand_path('~')}/machine/config/nextcloud.yml"
         deserialize(IO.binread("#{File.expand_path('~')}/machine/config/nextcloud.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
+
+    def phpmyadmin
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/phpmyadmin.yml always exists
+      if File.exist? "config/phpmyadmin.yml"
+        deserialize(IO.binread("config/phpmyadmin.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/phpmyadmin.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/phpmyadmin.yml")).deep_symbolize_keys
       else
         {}
       end
