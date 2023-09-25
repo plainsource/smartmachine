@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    smartmachine (1.1.0)
+    smartmachine (1.2.0.dev)
       activesupport (~> 6.0)
       bcrypt (~> 3.1, >= 3.1.13)
       bcrypt_pbkdf (>= 1.0, < 2.0)

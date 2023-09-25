@@ -1,3 +1,11 @@
 phpmyadminone:
   image: "phpmyadmin:5.2.1"
   host: "yourphpmyadminone.yourdomain.com"
+  networks: ["networkone", "nginx-network"]
+  pma_controlhost: mysqlone
+
+# phpmyadmintwo:
+#   image: "phpmyadmin:5.2.1"
+#   host: "yourphpmyadmintwo.yourdomain.com"
+#   networks: ["networkone", "nginx-network"]
+#   pma_controlhost: mysqlone
