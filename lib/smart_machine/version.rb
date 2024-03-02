@@ -18,7 +18,7 @@ module SmartMachine
     MAJOR = 1
     MINOR = 2
     TINY  = 0
-    PRE   = "dev"
+    PRE   = nil
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join(".")
   end
