@@ -93,7 +93,16 @@ module SmartMachine
 		  mupdf \
 		  mupdf-tools \
 		  poppler-utils && \
-              rm -rf /var/lib/apt/lists/*
+              rm -rf /var/lib/apt/lists/* && \
+              # ImageMagick 7. Remove this after its dependency is gone from ruby on rails.
+              cd /opt && wget https://download.imagemagick.org/archive/ImageMagick-7.1.1-29.tar.gz && \
+                tar xvzf ImageMagick-7.1.1-29.tar.gz && \
+                cd ImageMagick-7.1.1-29 && \
+                ./configure && \
+                make && \
+                make install && \
+                ldconfig /usr/local/lib && \
+                magick -version
 
 	  CMD ["smartmachine", "buildpacker", "packer", "rails"]
         DOCKERFILE
