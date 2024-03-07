@@ -65,6 +65,11 @@ Install the engine and buildpacker:
 
 ## Usage
 
+### Setup your network
+
+    $ smartmachine machine network up
+    $ smartmachine machine network down
+
 ### Choose Your Grids
 
 Choose only the grids you need. You can start or stop a grid at anytime using <b>up</b> or <b>down</b> commands respectively.
