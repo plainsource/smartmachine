@@ -65,7 +65,7 @@ Install the engine and buildpacker:
 
 ## Usage
 
-### Setup your network
+### Setup your Network
 
     $ smartmachine machine network up
     $ smartmachine machine network down
