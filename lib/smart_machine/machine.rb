@@ -191,6 +191,7 @@ module SmartMachine
     # 		print "-----> Stopping swap swapfile ... "
     # 		if system("sudo swapoff /swapfile", out: File::NULL)
     # 			system("sudo sed -i '/^vm.swappiness = /d' /etc/sysctl.conf", out: File::NULL)
+    # 		 	system("echo 100 | sudo tee /proc/sys/vm/vfs_cache_pressure", out: File::NULL)
     # 			system("echo 60 | sudo tee /proc/sys/vm/swappiness", out: File::NULL)
     # 			puts "done"
     #
