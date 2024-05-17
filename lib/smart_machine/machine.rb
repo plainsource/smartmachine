@@ -1,3 +1,4 @@
+# coding: utf-8
 require "net/ssh"
 
 module SmartMachine
@@ -60,36 +61,23 @@ module SmartMachine
     def setup
       getting_started
       securing_your_server
+      setup_services
     end
 
     private
 
     def getting_started
-      run_on_machine(commands: "sudo apt update && sudo apt upgrade")
+    end
 
-      sysctl_lines = []
-      # sysctl_lines.push('# KVM uses this.')
-      # sysctl_lines.push('# These lines should only be activated for VM hosts and not for VM guests.')
-      # sysctl_lines.push('# When getting a VM from a service provider, you will usually get a VM guest and not a VM host and hence these lines should not be added.')
-      # sysctl_lines.push('# Prevent bridged traffic from being processed by iptables rules.')
-      # sysctl_lines.push('net.bridge.bridge-nf-call-ip6tables=0')
-      # sysctl_lines.push('net.bridge.bridge-nf-call-iptables=0')
-      # sysctl_lines.push('net.bridge.bridge-nf-call-arptables=0')
-      sysctl_lines.push('# Redis uses this.')
-      sysctl_lines.push('vm.overcommit_memory=1')
-      sysctl_lines.push('# Elasticsearch uses this.')
-      sysctl_lines.push('vm.max_map_count=262144')
-      commands = [
-        "sudo touch /etc/sysctl.d/99-smartmachine.conf",
-        "echo -e '#{sysctl_lines.join('\n')}' | sudo tee /etc/sysctl.d/99-smartmachine.conf",
-        "sudo sysctl -p /etc/sysctl.d/99-smartmachine.conf"
-      ]
-      run_on_machine(commands: commands)
+    def securing_your_server
+      # apt update && apt upgrade
+      # puts 'When updating some packages, you may be prompted to use updated configuration files. If prompted, it is typically safer to keep the locally installed version.'
 
       # apt install locales-all
-
       # puts 'You may be prompted to make a menu selection when the Grub package is updated on Ubuntu. If prompted, select keep the local version currently installed.'
-      # apt update && apt upgrade
+
+      # dpkg-reconfigure tzdata
+      # date
 
       # hostnamectl set-hostname SmartMachine.credentials.machine[:name]
 
@@ -98,24 +86,6 @@ module SmartMachine
       # /etc/hosts
       # 203.0.113.10 SmartMachine.credentials.machine[:name].example.com SmartMachine.credentials.machine[:name]
       # 2600:3c01::a123:b456:c789:d012 SmartMachine.credentials.machine[:name].example.com SmartMachine.credentials.machine[:name]
-
-      # dpkg-reconfigure tzdata
-      # date
-    end
-
-    def securing_your_server
-      # apt install unattended-upgrades
-      # dpkg-reconfigure --priority=low unattended-upgrades
-
-      # nano /etc/apt/apt.conf.d/20auto-upgrades
-      # APT::Periodic::Update-Package-Lists "1";
-      # APT::Periodic::Download-Upgradeable-Packages "1";
-      # APT::Periodic::AutocleanInterval "7";
-      # APT::Periodic::Unattended-Upgrade "1";
-
-      # apt install apticron
-      # /usr/lib/apticron/apticron.conf
-      # EMAIL="root@example.com"
 
       # adduser example_user
       # adduser example_user sudo
@@ -143,10 +113,53 @@ module SmartMachine
       # sudo apt install sendmail
       # sudo cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local
       # sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-      # Change destmail, sendername, sender
+      # Change destmail
       # Change action = %(action_mwl)s
       # sudo fail2ban-client reload
       # sudo fail2ban-client status
+
+      # Send email to show that there is a need for pending updates to be completed
+      # apt install apticron
+      # /usr/lib/apticron/apticron.conf
+      # EMAIL="root@example.com"
+
+      # Automatic Updates
+      # apt install unattended-upgrades
+      # sudo systemctl enable unattended-upgrades
+      # sudo systemctl start unattended-upgrades
+      # nano /etc/apt/apt.conf.d/50unattended-upgrades
+      # Unattended-Upgrade::Mail "destemail@domain.com";
+      # Unattended-Upgrade::SyslogEnable "true";
+      # Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+      # Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+      # Unattended-Upgrade::Remove-Unused-Dependencies "true";
+      # nano /etc/apt/apt.conf.d/20auto-upgrades
+      # APT::Periodic::Update-Package-Lists "1";
+      # APT::Periodic::Unattended-Upgrade "1";
+      # APT::Periodic::AutocleanInterval "7";
+    end
+
+    def setup_services
+      run_on_machine(commands: "sudo apt update && sudo apt upgrade")
+
+      sysctl_lines = []
+      # sysctl_lines.push('# KVM uses this.')
+      # sysctl_lines.push('# These lines should only be activated for VM hosts and not for VM guests.')
+      # sysctl_lines.push('# When getting a VM from a service provider, you will get a VM guest and not a VM host and hence these lines should not be added.')
+      # sysctl_lines.push('# Prevent bridged traffic from being processed by iptables rules.')
+      # sysctl_lines.push('net.bridge.bridge-nf-call-ip6tables=0')
+      # sysctl_lines.push('net.bridge.bridge-nf-call-iptables=0')
+      # sysctl_lines.push('net.bridge.bridge-nf-call-arptables=0')
+      sysctl_lines.push('# Redis uses this.')
+      sysctl_lines.push('vm.overcommit_memory=1')
+      sysctl_lines.push('# Elasticsearch uses this.')
+      sysctl_lines.push('vm.max_map_count=262144')
+      commands = [
+        "sudo touch /etc/sysctl.d/99-smartmachine.conf",
+        "echo -e '#{sysctl_lines.join('\n')}' | sudo tee /etc/sysctl.d/99-smartmachine.conf",
+        "sudo sysctl -p /etc/sysctl.d/99-smartmachine.conf"
+      ]
+      run_on_machine(commands: commands)
     end
   end
 end
