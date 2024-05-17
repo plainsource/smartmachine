@@ -33,10 +33,11 @@ module SmartMachine
           "--volume='#{@home_dir}/smartmachine/apps/containers/#{@appname}/app/public/packs:/app/public/packs'",
           "--volume='#{@home_dir}/smartmachine/apps/containers/#{@appname}/app/node_modules:/app/node_modules'",
           "--volume='#{@home_dir}/smartmachine/apps/containers/#{@appname}/app/storage:/app/storage'",
+          (using_buildpacker ? "--cpus=1 --memory=512m --memory-swap=1024m" : nil),
           "--restart='always'",
           "--init",
           # "--network='nginx-network'",
-          "#{using_buildpacker ? "smartmachine/buildpackers/rails:#{SmartMachine.version}" : @appimage}"
+          (using_buildpacker ? "smartmachine/buildpackers/rails:#{SmartMachine.version}" : @appimage)
         ]
         command.push(using_command) if using_command.present?
 
@@ -97,7 +98,7 @@ module SmartMachine
       def commit_app_image!
         if create!(using_command: "smartmachine buildpacker packer rails", using_buildpacker: true)
           logger.debug "-----> Starting attached container #{@name} ... "
-          if system("docker start --memory=512m --attach #{@name}")
+          if system("docker start --attach #{@name}")
             logger.debug "-----> Committing container #{@name} to image... "
             if system("docker commit #{@name} #{@appimage}", out: File::NULL)
               stop!
