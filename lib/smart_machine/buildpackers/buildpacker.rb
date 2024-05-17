@@ -122,6 +122,9 @@ module SmartMachine
       # 		system("echo 10 | sudo tee /proc/sys/vm/swappiness", out: File::NULL)
       # 		system("sudo sed -i '/^vm.swappiness = /d' /etc/sysctl.conf", out: File::NULL)
       # 		system("echo vm.swappiness = 10 | sudo tee -a /etc/sysctl.conf", out: File::NULL)
+      # 		system("echo 50 | sudo tee /proc/sys/vm/vfs_cache_pressure", out: File::NULL)
+      # 		system("sudo sed -i '/^vm.vfs_cache_pressure = /d' /etc/sysctl.conf", out: File::NULL)
+      # 		system("echo vm.vfs_cache_pressure = 50 | sudo tee -a /etc/sysctl.conf", out: File::NULL)
       # 		puts "done"
       #
       # 		print "-----> Starting swap swapfile ... "
