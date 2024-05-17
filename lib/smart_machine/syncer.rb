@@ -8,7 +8,9 @@ module SmartMachine
 
       push if initial
 
-      pull
+      # Uncomment this if you want to implement pull in sync.
+      # Ideally please remove this functionality in favour of entire server folder backup feature.
+      #pull
       push
 
       puts "-----> Syncing SmartMachine Complete"
