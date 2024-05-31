@@ -33,7 +33,7 @@ module SmartMachine
           "--volume='#{@home_dir}/smartmachine/apps/containers/#{@appname}/app/public/packs:/app/public/packs'",
           "--volume='#{@home_dir}/smartmachine/apps/containers/#{@appname}/app/node_modules:/app/node_modules'",
           "--volume='#{@home_dir}/smartmachine/apps/containers/#{@appname}/app/storage:/app/storage'",
-          (using_buildpacker ? "--cpus=1 --memory=512m --memory-swap=1024m" : nil),
+          (using_buildpacker ? "--cpus=1 --memory=1024m --memory-swap=2048m" : nil),
           "--restart='always'",
           "--init",
           # "--network='nginx-network'",
