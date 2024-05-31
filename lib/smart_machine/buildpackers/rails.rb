@@ -173,6 +173,66 @@ module SmartMachine
         system("alias bundler='bundler _#{bundler_version}_'")
         logger.info "Using bundler v" + bundler_version + "\n"
 
+        # Install nodejs
+        nodejs_version = `sed -n '/node/{p;n}' package.json`.strip.split(":").last&.strip&.delete_prefix('"')&.delete_suffix(',').delete_suffix('"')
+        if nodejs_version.nil? || nodejs_version.empty?
+          logger.error "Could not find nodejs version. Have you specified it explicitly in package.json with engines field and run yarn install?\n"
+          return false
+        end
+
+        unless system(user_bash("node -v"), [:out, :err] => File::NULL) && `#{user_bash('node -v')}`.strip&.delete_prefix('v') == nodejs_version
+          logger.info "Installing nodejs v#{nodejs_version}\n"
+
+          Open3.popen2e(user_bash("asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+          Open3.popen2e(user_bash("asdf plugin update nodejs")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+          Open3.popen2e(user_bash("asdf install nodejs #{nodejs_version}")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+          Open3.popen2e(user_bash("asdf local nodejs #{nodejs_version}")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+
+          unless `#{user_bash('node -v')}`.strip&.delete_prefix('v') == nodejs_version
+            logger.error "Could not install nodejs with version #{nodejs_version}. Please try another valid version that asdf supports.\n"
+            return false
+          end
+        end
+        logger.info "Using nodejs v" + `#{user_bash('node -v')}`.strip&.delete_prefix('v') + "\n"
+
+        # Install yarn
+        yarn_version = `sed -n '/yarn/{p;n}' package.json`.strip.split(":").last&.strip&.delete_prefix('"')&.delete_suffix(',').delete_suffix('"')
+        if yarn_version.nil? || yarn_version.empty?
+          logger.error "Could not find yarn version. Have you specified it explicitly in package.json with engines field and run yarn install?\n"
+          return false
+        end
+
+        unless system(user_bash("yarn -v"), [:out, :err] => File::NULL) && `#{user_bash('yarn -v')}`.strip == yarn_version
+          logger.info "Installing yarn v#{yarn_version}\n"
+
+          Open3.popen2e(user_bash("asdf plugin add yarn https://github.com/twuni/asdf-yarn.git")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+          Open3.popen2e(user_bash("asdf plugin update yarn")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+          Open3.popen2e(user_bash("asdf install yarn #{yarn_version}")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+          Open3.popen2e(user_bash("asdf local yarn #{yarn_version}")) do |stdin, stdout_and_stderr, wait_thr|
+            stdout_and_stderr.each { |line| logger.info "#{line}" }
+          end
+
+          unless `#{user_bash('yarn -v')}`.strip == yarn_version
+            logger.error "Could not install yarn with version #{yarn_version}. Please try another valid version that asdf supports.\n"
+            return false
+          end
+        end
+        logger.info "Using yarn v" + `#{user_bash('yarn -v')}`.strip + "\n"
+
         set_logger_formatter_arrow
 
         return true
