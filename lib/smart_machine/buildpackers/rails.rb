@@ -174,7 +174,7 @@ module SmartMachine
         logger.info "Using bundler v" + bundler_version + "\n"
 
         # Install nodejs
-        nodejs_version = `sed -n '/node/{p;n}' package.json`.strip.split(":").last&.strip&.delete_prefix('"')&.delete_suffix(',').delete_suffix('"')
+        nodejs_version = `sed -n '/node/{p;n}' package.json`.strip.split(":").last&.strip&.delete_prefix('"')&.delete_suffix(',')&.delete_suffix('"')
         if nodejs_version.nil? || nodejs_version.empty?
           logger.error "Could not find nodejs version. Have you specified it explicitly in package.json with engines field and run yarn install?\n"
           return false
@@ -204,7 +204,7 @@ module SmartMachine
         logger.info "Using nodejs v" + `#{user_bash('node -v')}`.strip&.delete_prefix('v') + "\n"
 
         # Install yarn
-        yarn_version = `sed -n '/yarn/{p;n}' package.json`.strip.split(":").last&.strip&.delete_prefix('"')&.delete_suffix(',').delete_suffix('"')
+        yarn_version = `sed -n '/yarn/{p;n}' package.json`.strip.split(":").last&.strip&.delete_prefix('"')&.delete_suffix(',')&.delete_suffix('"')
         if yarn_version.nil? || yarn_version.empty?
           logger.error "Could not find yarn version. Have you specified it explicitly in package.json with engines field and run yarn install?\n"
           return false
