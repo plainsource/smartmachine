@@ -105,7 +105,7 @@ module SmartMachine
 
       def containerize_process!(name:, config:)
         container = SmartMachine::Apps::Container.new(name: name, appname: @appname, appversion: @appversion)
-        if container.create!(using_command: config.dig(:command))
+        if container.create!(using_command: user_bash(config.dig(:command)))
           networks = config.dig(:networks)&.split(" ")
           networks.each do |network|
             container.connect_to_network!(network_name: network)

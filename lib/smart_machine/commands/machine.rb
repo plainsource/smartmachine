@@ -1,3 +1,6 @@
+require 'smart_machine/commands/machine_commands/sub_thor'
+require 'smart_machine/commands/machine_commands/network'
+
 module SmartMachine
   module Commands
     class Machine < Thor
@@ -27,6 +30,9 @@ module SmartMachine
           machine.run_on_machine(commands: "#{args.join(' ')}")
         end
       end
+
+      desc "network", "Run machine network commands"
+      subcommand "network", MachineCommands::Network
     end
   end
 end

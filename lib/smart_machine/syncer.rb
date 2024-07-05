@@ -8,7 +8,9 @@ module SmartMachine
 
       push if initial
 
-      pull
+      # Uncomment this if you want to implement pull in sync.
+      # Ideally please remove this functionality in favour of entire server folder backup feature.
+      #pull
       push
 
       puts "-----> Syncing SmartMachine Complete"
@@ -44,7 +46,7 @@ module SmartMachine
         "-e 'ssh -p #{SmartMachine.credentials.machine[:port]}'",
         "--rsync-path='smartengine syncer rsync'",
         "--delete",
-        "--include={#{files_list}}",
+        files_list.map { |regex| "--include='#{regex}'" }.join(" "),
         "--exclude=*"
       ]
 
@@ -89,7 +91,7 @@ module SmartMachine
         'grids/terminal',
         'grids/terminal/***',
       ]
-      files.join(',')
+      files
     end
 
     def push_files_list
@@ -106,13 +108,17 @@ module SmartMachine
         'config',
         'config/mysql',
         'config/mysql/schedule.rb',
+        'config/phpmyadmin',
+        'config/phpmyadmin/***',
         'config/credentials.yml.enc',
         'config/environment.rb',
         'config/elasticsearch.yml',
         'config/god.yml',
         'config/minio.yml',
         'config/mysql.yml',
+        'config/network.yml',
         'config/nextcloud.yml',
+        'config/phpmyadmin.yml',
         'config/prereceiver.yml',
         'config/redis.yml',
         'config/terminal.yml',
@@ -132,7 +138,7 @@ module SmartMachine
 
         'tmp/***',
       ]
-      files.join(',')
+      files
     end
   end
 end

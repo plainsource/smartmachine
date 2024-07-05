@@ -28,11 +28,14 @@ require 'smart_machine/grids/minio'
 require 'smart_machine/grids/mysql'
 require 'smart_machine/grids/nextcloud'
 require 'smart_machine/grids/nginx'
+require 'smart_machine/grids/phpmyadmin'
 require 'smart_machine/grids/prereceiver'
 require 'smart_machine/grids/redis'
 # require 'smart_machine/grids/solr'
 require 'smart_machine/grids/terminal/wetty'
 require 'smart_machine/grids/terminal'
+
+require 'smart_machine/machines/network'
 
 module SmartMachine
   class Error < StandardError; end

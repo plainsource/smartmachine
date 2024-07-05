@@ -14,11 +14,6 @@ module SmartMachine
         @docker_gname = "docker"
         @docker_socket_path = "/var/run/docker.sock"
         @remote_smartmachine_dir = "/home/`whoami`/smartmachine"
-      # elsif platform_on_machine?(os: "mac")
-      #   @docker_gid = "id -g"
-      #   @docker_gname = "staff"
-      #   @docker_socket_path = "/Users/`whoami`/Library/Containers/com.docker.docker/Data/docker.sock"
-      #   @remote_smartmachine_dir = "/Users/`whoami`/Desktop/smartmachine"
       else
         raise("OS not supported to set docker_gid, docker_gname and docker_socket_path")
       end
@@ -28,7 +23,6 @@ module SmartMachine
       puts "-----> Installing SmartMachine Engine"
 
       if @machine.run_on_machine commands: "mkdir -p #{@remote_smartmachine_dir}/tmp/engine"
-        @scp.upload!(local_path: "#{SmartMachine.config.gem_dir}/lib/smart_machine/engine/Dockerfile", remote_path: "~/smartmachine/tmp/engine")
         @scp.upload!(local_path: "#{@gem_cache_dir}/smartmachine-#{SmartMachine.version}.gem", remote_path: "~/smartmachine/tmp/engine")
       end
 
@@ -36,12 +30,12 @@ module SmartMachine
       command = [
         "docker image build --quiet --tag #{engine_image_name_with_version}",
         "--build-arg SMARTMACHINE_MASTER_KEY=#{SmartMachine::Credentials.new.read_key}",
-        "--build-arg SMARTMACHINE_VERSION=#{SmartMachine.version}",
         "--build-arg USER_NAME=`id -un`",
         "--build-arg USER_UID=`id -u`",
         "--build-arg DOCKER_GID=`#{@docker_gid}`",
         "--build-arg DOCKER_GNAME=#{@docker_gname}",
-        "#{@remote_smartmachine_dir}/tmp/engine"
+        "-f- #{@remote_smartmachine_dir}/tmp/engine",
+        "<<'EOF'\n#{dockerfile}EOF"
       ]
       @machine.run_on_machine commands: command.join(" ")
       puts "done"
@@ -101,6 +95,48 @@ module SmartMachine
 
     def engine_image_name
       "smartmachine/smartengine"
+    end
+
+    def dockerfile
+      file = <<~'DOCKERFILE'
+        FROM ruby:%<smartmachine_ruby_version>s-bullseye
+	LABEL maintainer="plainsource <plainsource@humanmind.me>"
+
+	# User
+	# --- Fix to change docker gid to 998 (if it is in use) so that addgroup is free to create a group with docker gid.
+	ARG USER_NAME
+	ARG USER_UID
+	ARG DOCKER_GID
+	ARG DOCKER_GNAME
+	RUN sed -i "s/$DOCKER_GID/998/" /etc/group && \
+	    adduser --disabled-password --gecos "" --uid "$USER_UID" "$USER_NAME" && \
+	    addgroup --gid "$DOCKER_GID" "$DOCKER_GNAME" && adduser "$USER_NAME" "$DOCKER_GNAME"
+
+	# Add docker repository for debian
+	RUN apt-get update && apt-get install -y --no-install-recommends lsb-release && \
+            mkdir -p /etc/apt/keyrings && \
+            curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+            apt-get update
+
+	# Essentials
+	RUN apt-get update && \
+            apt-get install -y --no-install-recommends \
+                docker-ce-cli \
+                rsync && \
+            rm -rf /var/lib/apt/lists/*
+
+	# smartmachine gem
+	COPY ./smartmachine-%<smartmachine_version>s.gem ./smartmachine-%<smartmachine_version>s.gem
+	RUN gem install --no-document ./smartmachine-%<smartmachine_version>s.gem && \
+	    rm ./smartmachine-%<smartmachine_version>s.gem
+
+	# SmartMachine master key
+	ARG SMARTMACHINE_MASTER_KEY
+	ENV SMARTMACHINE_MASTER_KEY=$SMARTMACHINE_MASTER_KEY
+      DOCKERFILE
+
+      format(file, "smartmachine_ruby_version": SmartMachine.ruby_version, "smartmachine_version": SmartMachine.version)
     end
   end
 end
