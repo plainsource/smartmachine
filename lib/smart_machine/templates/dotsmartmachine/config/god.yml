@@ -1,5 +1,9 @@
 godone:
-  email: "sysadmin@yourdomainone.com"
+  host: "yourgodone.yourdomain.com"
+  frontend: "/frontend"
+  admin_email: "admin@yourdomain.com"
 
 # godtwo:
-#   email: "sysadmin@yourdomaintwo.com"
+#   host: "yourgodtwo.yourdomain.com"
+#   frontend: "/frontend"
+#   admin_email: "admin@yourdomain.com"
