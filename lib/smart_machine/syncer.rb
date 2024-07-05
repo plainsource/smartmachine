@@ -64,6 +64,9 @@ module SmartMachine
         'grids/elasticsearch',
         'grids/elasticsearch/***',
 
+        'grids/emailer',
+        'grids/emailer/***',
+
         'grids/minio',
         'grids/minio/***',
 
@@ -108,6 +111,7 @@ module SmartMachine
         'config/phpmyadmin',
         'config/phpmyadmin/***',
         'config/credentials.yml.enc',
+        'config/emailer.yml',
         'config/environment.rb',
         'config/elasticsearch.yml',
         'config/minio.yml',

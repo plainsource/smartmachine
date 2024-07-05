@@ -14,7 +14,7 @@ module SmartMachine
     private
 
     def grids
-      @grids ||= OpenStruct.new(elasticsearch: elasticsearch, minio: minio, mysql: mysql, nextcloud: nextcloud, phpmyadmin: phpmyadmin, prereceiver: prereceiver, redis: redis, terminal: terminal)
+      @grids ||= OpenStruct.new(elasticsearch: elasticsearch, emailer: emailer, minio: minio, mysql: mysql, nextcloud: nextcloud, phpmyadmin: phpmyadmin, prereceiver: prereceiver, redis: redis, terminal: terminal)
     end
 
     def elasticsearch
@@ -23,6 +23,17 @@ module SmartMachine
         deserialize(IO.binread("config/elasticsearch.yml")).deep_symbolize_keys
       elsif File.exist? "#{File.expand_path('~')}/machine/config/elasticsearch.yml"
         deserialize(IO.binread("#{File.expand_path('~')}/machine/config/elasticsearch.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
+
+    def emailer
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/emailer.yml always exists
+      if File.exist? "config/emailer.yml"
+        deserialize(IO.binread("config/emailer.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/emailer.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/emailer.yml")).deep_symbolize_keys
       else
         {}
       end

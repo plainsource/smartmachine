@@ -1,0 +1,7 @@
+emailerone:
+  host: "youremailerone.yourdomain.com"
+  frontend: "/frontend"
+
+# emailertwo:
+#   host: "youremailertwo.yourdomain.com"
+#   frontend: "/frontend"

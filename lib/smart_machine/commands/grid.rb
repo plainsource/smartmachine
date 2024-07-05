@@ -1,5 +1,6 @@
 require 'smart_machine/commands/grid_commands/sub_thor'
 require 'smart_machine/commands/grid_commands/elasticsearch'
+require 'smart_machine/commands/grid_commands/emailer'
 require 'smart_machine/commands/grid_commands/minio'
 require 'smart_machine/commands/grid_commands/mysql'
 require 'smart_machine/commands/grid_commands/nextcloud'
@@ -16,6 +17,9 @@ module SmartMachine
 
       desc "elasticsearch", "Run elasticsearch grid commands"
       subcommand "elasticsearch", GridCommands::Elasticsearch
+
+      desc "emailer", "Run emailer grid commands"
+      subcommand "emailer", GridCommands::Emailer
 
       desc "minio", "Run minio grid commands"
       subcommand "minio", GridCommands::Minio
