@@ -106,6 +106,8 @@ module SmartMachine
         'bin/smartmachine',
 
         'config',
+        'config/emailer',
+        'config/emailer/***',
         'config/mysql',
         'config/mysql/schedule.rb',
         'config/phpmyadmin',

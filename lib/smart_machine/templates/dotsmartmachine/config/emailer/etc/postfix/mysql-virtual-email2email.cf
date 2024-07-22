@@ -1,0 +1,7 @@
+##### SmartMachine Begin.
+user = %<mysql_user>s
+password = %<mysql_password>s
+hosts = %<mysql_host>s:%<mysql_port>s
+dbname = %<mysql_database_name>s
+query = SELECT email FROM virtual_users WHERE email='%s'
+##### SmartMachine Close.

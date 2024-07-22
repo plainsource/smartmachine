@@ -6,8 +6,17 @@ module SmartMachine
         raise "emailer config for #{name} not found." unless config
 
         @image = "smartmachine/emailer:#{SmartMachine.version}"
-        @host = config.dig(:host)
-        @frontend = config.dig(:frontend)
+        @fqdn = config.dig(:fqdn)
+        @mailname = config.dig(:mailname)
+        @sysadmin_email = config.dig(:sysadmin_email)
+        @networks = config.dig(:networks)
+        @mysql_host = config.dig(:mysql_host)
+        @mysql_port = config.dig(:mysql_port)
+        @mysql_user = config.dig(:mysql_user)
+        @mysql_password = config.dig(:mysql_password)
+        @mysql_database_name = config.dig(:mysql_database_name)
+        @monit_username = config.dig(:monit_username)
+        @monit_password = config.dig(:monit_password)
 
         @name = name.to_s
         @home_dir = File.expand_path('~')
@@ -50,6 +59,11 @@ module SmartMachine
       def uper
         if system("docker image inspect #{@image}", [:out, :err] => File::NULL)
           FileUtils.mkdir_p("#{@home_dir}/machine/grids/emailer/#{@name}/backups")
+          FileUtils.mkdir_p("#{@home_dir}/machine/grids/emailer/#{@name}/mail")
+          FileUtils.mkdir_p("#{@home_dir}/machine/grids/emailer/#{@name}/opendkim")
+
+          # Setting entrypoint permission.
+          system("chmod +x #{@home_dir}/machine/config/emailer/docker/entrypoint.rb")
 
           # Creating & Starting containers
           print "-----> Creating container #{@name} ... "
@@ -57,20 +71,47 @@ module SmartMachine
           command = [
             "docker create",
             "--name='#{@name}'",
-            "--env VIRTUAL_HOST=#{@host}",
-            "--env VIRTUAL_PATH=#{@frontend}",
-            "--env VIRTUAL_PORT=80",
-            "--env LETSENCRYPT_HOST=#{@host}",
-            "--env LETSENCRYPT_EMAIL=#{SmartMachine.config.sysadmin_email}",
+            "--env VIRTUAL_HOST=#{@fqdn}",
+            "--env LETSENCRYPT_HOST=#{@fqdn}",
+            "--env LETSENCRYPT_EMAIL=#{@sysadmin_email}",
             "--env LETSENCRYPT_TEST=false",
             "--env CONTAINER_NAME='#{@name}'",
-            # "--publish='587:587'",
+            "--env FQDN='#{@fqdn}'",
+            "--env MAILNAME='#{@mailname}'",
+            "--env SYSADMIN_EMAIL='#{@sysadmin_email}'",
+            "--env MYSQL_HOST='#{@mysql_host}'",
+            "--env MYSQL_PORT='#{@mysql_port}'",
+            "--env MYSQL_USER='#{@mysql_user}'",
+            "--env MYSQL_PASSWORD='#{@mysql_password}'",
+            "--env MYSQL_DATABASE_NAME='#{@mysql_database_name}'",
+            "--env MONIT_USERNAME='#{@monit_username}'",
+            "--env MONIT_PASSWORD='#{@monit_password}'",
+            "--expose='80'",
+            "--publish='25:25'",
+            # "--publish='465:465'",
+            "--publish='587:587'",
+            # "--publish='110:110'",
+            "--publish='995:995'",
+            # "--publish='143:143'",
+            "--publish='993:993'",
+            "--volume='#{@home_dir}/smartmachine/grids/nginx/certificates/#{@fqdn}/fullchain.pem:/etc/letsencrypt/live/#{@fqdn}/fullchain.pem:ro'",
+            "--volume='#{@home_dir}/smartmachine/grids/nginx/certificates/#{@fqdn}/key.pem:/etc/letsencrypt/live/#{@fqdn}/privkey.pem:ro'",
+            "--volume='#{@home_dir}/smartmachine/config/emailer:/smartmachine/config/emailer:ro'",
+            "--volume='#{@home_dir}/smartmachine/grids/emailer/#{@name}/mail:/var/mail'",
+            "--volume='#{@home_dir}/smartmachine/grids/emailer/#{@name}/opendkim:/etc/opendkim'",
+            "--entrypoint='/smartmachine/config/emailer/docker/entrypoint.rb'",
+            "--tmpfs /run/tmpfs",
             "--init",
             "--restart='always'",
             "--network='nginx-network'",
-            "#{@image}"
+            "#{@image}",
+            "monit -I -B"
           ]
           if system(command.compact.join(" "), out: File::NULL)
+            @networks.each do |network|
+              system("docker network connect #{network} #{@name}")
+            end
+
             puts "done"
             puts "-----> Starting container #{@name} ... "
             if system("docker start #{@name}", out: File::NULL)
@@ -87,8 +128,12 @@ module SmartMachine
       end
 
       def downer
-        # Stopping & Removing containers - in reverse order
+        # Disconnecting networks
+        @networks.reverse.each do |network|
+          system("docker network disconnect #{network} #{@name}")
+        end
 
+        # Stopping & Removing containers - in reverse order
         print "-----> Stopping container #{@name} ... "
         if system("docker stop '#{@name}'", out: File::NULL)
           puts "done"
@@ -108,26 +153,24 @@ module SmartMachine
 	  FROM smartmachine/smartengine:$SMARTMACHINE_VERSION
 	  LABEL maintainer="plainsource <plainsource@humanmind.me>"
 
+	  SHELL ["/bin/bash", "-c"]
+
 	  RUN apt-get update && \
 	      \
-	      apt-get install -y --no-install-recommends haproxy && \
-	      mkdir -p /run/haproxy && \
-	      mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.original && \
-	      \
+	      debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'" && \
+              debconf-set-selections <<< "postfix postfix/mailname string %<mailname>s" && \
+	      apt-get install -y --no-install-recommends \
+	          rsyslog \
+	          postfix postfix-mysql \
+	          dovecot-core dovecot-imapd dovecot-pop3d dovecot-lmtpd dovecot-mysql \
+	          spamassassin spamc \
+	          opendkim opendkim-tools \
+                  postfix-policyd-spf-python postfix-pcre \
+	          haproxy monit && \
 	      rm -rf /var/lib/apt/lists/*
-
-	  COPY haproxy.cfg /etc/haproxy
-
-	  COPY entrypoint.rb /usr/local/bin/entrypoint.rb
-	  RUN chmod +x /usr/local/bin/entrypoint.rb
-	  ENTRYPOINT ["entrypoint.rb"]
-
-	  EXPOSE 2223 80
-	  STOPSIGNAL SIGUSR1
-	  CMD ["haproxy", "-W", "-db", "-f", "/etc/haproxy/haproxy.cfg"]
         DOCKERFILE
 
-        format(file, "sysadmin_email": SmartMachine.config.sysadmin_email, "percent": '%')
+        format(file, "mailname": @mailname)
       end
     end
   end

@@ -56,6 +56,12 @@ module SmartMachine
 			    root_password: #{SecureRandom.hex(16)}
 			    username: #{SecureRandom.hex(8)}
 			    password: #{SecureRandom.hex(16)}
+			  emailerone:
+			    mysql_user: #{SecureRandom.hex(8)}
+			    mysql_password: #{SecureRandom.hex(16)}
+			    mysql_database_name: #{SecureRandom.hex(8)}
+			    monit_username: #{SecureRandom.hex(8)}
+			    monit_password: #{SecureRandom.hex(16)}
 			  minioone:
   			    access_key: #{SecureRandom.hex(8)}
   			    secret_key: #{SecureRandom.hex(16)}
