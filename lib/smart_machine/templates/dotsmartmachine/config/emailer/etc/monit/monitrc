@@ -175,10 +175,9 @@ set pidfile /run/tmpfs/monit.pid
 #     #    pemfile: /etc/ssl/certs/monit.pem
 #     #}
 ##### SmartMachine Begin.
-#set httpd port 2812 and
-#     use address localhost
-#     allow localhost
-#     allow %<monit_username>s:"%<monit_password>s"
+set httpd port 2812 and
+     use address localhost
+     allow localhost
 ##### SmartMachine Close.
 
 ###############################################################################

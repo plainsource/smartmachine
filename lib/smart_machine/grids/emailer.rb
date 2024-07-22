@@ -15,8 +15,6 @@ module SmartMachine
         @mysql_user = config.dig(:mysql_user)
         @mysql_password = config.dig(:mysql_password)
         @mysql_database_name = config.dig(:mysql_database_name)
-        @monit_username = config.dig(:monit_username)
-        @monit_password = config.dig(:monit_password)
 
         @name = name.to_s
         @home_dir = File.expand_path('~')
@@ -84,8 +82,6 @@ module SmartMachine
             "--env MYSQL_USER='#{@mysql_user}'",
             "--env MYSQL_PASSWORD='#{@mysql_password}'",
             "--env MYSQL_DATABASE_NAME='#{@mysql_database_name}'",
-            "--env MONIT_USERNAME='#{@monit_username}'",
-            "--env MONIT_PASSWORD='#{@monit_password}'",
             "--expose='80'",
             "--publish='25:25'",
             # "--publish='465:465'",

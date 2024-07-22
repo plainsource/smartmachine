@@ -31,8 +31,6 @@ unless File.exist?('/run/initial_container_start')
     mysql_user: ENV.delete('MYSQL_USER'),
     mysql_password: ENV.delete('MYSQL_PASSWORD'),
     mysql_database_name: ENV.delete('MYSQL_DATABASE_NAME'),
-    monit_username: ENV.delete('MONIT_USERNAME'),
-    monit_password: ENV.delete('MONIT_PASSWORD')
   }
 
   # rsyslog

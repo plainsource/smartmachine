@@ -8,8 +8,6 @@ emailerone:
   mysql_user: <%= SmartMachine.credentials.dig(:emailerone, :mysql_user) %>
   mysql_password: <%= SmartMachine.credentials.dig(:emailerone, :mysql_password) %>
   mysql_database_name: <%= SmartMachine.credentials.dig(:emailerone, :mysql_database_name) %>
-  monit_username: <%= SmartMachine.credentials.dig(:emailerone, :monit_username) %>
-  monit_password: <%= SmartMachine.credentials.dig(:emailerone, :monit_password) %>
 
 # emailertwo:
 #   fqdn: "youremailertwo.yourdomain.com"
@@ -21,5 +19,3 @@ emailerone:
 #   mysql_user: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_user) %>
 #   mysql_password: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_password) %>
 #   mysql_database_name: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_database_name) %>
-#   monit_username: <%= SmartMachine.credentials.dig(:emailertwo, :monit_username) %>
-#   monit_password: <%= SmartMachine.credentials.dig(:emailertwo, :monit_password) %>
