@@ -76,7 +76,7 @@ driver = mysql
 #
 #connect =
 ##### SmartMachine Begin.
-connect = host=%<mysql_host>s:%<mysql_port>s dbname=%<mysql_database_name>s user=%<mysql_user>s password=%<mysql_password>s
+connect = host=%<mysql_host>s port=%<mysql_port>s dbname=%<mysql_database_name>s user=%<mysql_user>s password=%<mysql_password>s
 ##### SmartMachine Close.
 
 # Default password scheme.
