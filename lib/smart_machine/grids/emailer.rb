@@ -100,8 +100,7 @@ module SmartMachine
             "--init",
             "--restart='always'",
             "--network='nginx-network'",
-            "#{@image}",
-            "monit -I -B"
+            "#{@image}"
           ]
           if system(command.compact.join(" "), out: File::NULL)
             @networks.each do |network|

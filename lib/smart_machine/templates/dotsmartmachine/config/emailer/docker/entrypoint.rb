@@ -78,12 +78,10 @@ unless File.exist?('/run/initial_container_start')
   system("chmod -R o-rwx /etc/dovecot")
 
   # Spamassassin
-  FileUtils.cp '/smartmachine/config/emailer/etc/default/spamassassin', '/etc/default/spamassassin'
   FileUtils.cp '/smartmachine/config/emailer/etc/spamassassin/local.cf', '/etc/spamassassin/local.cf'
   system("adduser --gecos '' --disabled-login spamd", out: File::NULL)
 
   # OpenDKIM
-  FileUtils.cp '/smartmachine/config/emailer/etc/default/opendkim', '/etc/default/opendkim'
   FileUtils.cp '/smartmachine/config/emailer/etc/opendkim.conf', '/etc/opendkim.conf'
   system("adduser postfix opendkim", out: File::NULL)
   system("chmod u=rw,go=r /etc/opendkim.conf")
@@ -115,6 +113,7 @@ unless File.exist?('/run/initial_container_start')
   system("chown opendkim:postfix /var/spool/postfix/opendkim")
 
   # Haproxy
+  FileUtils.mkdir_p '/var/lib/haproxy/dev'
   FileUtils.mkdir_p '/run/haproxy'
   FileUtils.cp '/smartmachine/config/emailer/etc/haproxy/haproxy.cfg', '/etc/haproxy/haproxy.cfg'
 
@@ -122,11 +121,20 @@ unless File.exist?('/run/initial_container_start')
   FileUtils.cp '/smartmachine/config/emailer/etc/monit/monitrc', '/etc/monit/monitrc'
   FileUtils.cp_r '/smartmachine/config/emailer/etc/monit/conf.d/.', '/etc/monit/conf.d'
   filepaths = [
+    '/etc/monit/conf.d/services.cfg',
     '/etc/monit/monitrc'
   ]
   update_envkeys_in(filepaths, envkeys)
 
+  # Logtailer
+  FileUtils.cp '/smartmachine/config/emailer/docker/logtailer.rb', '/usr/bin/logtailer.rb'
+  system("chmod +x /usr/bin/logtailer.rb")
+
+  # Command
+  FileUtils.cp '/smartmachine/config/emailer/docker/command.rb', '/usr/bin/command.rb'
+  system("chmod +x /usr/bin/command.rb")
+
   logger.info "Initial setup completed for #{envkeys[:container_name]}."
 end
 
-exec(*ARGV)
+ARGV.empty? ? exec("/usr/bin/command.rb") : exec(*ARGV)
