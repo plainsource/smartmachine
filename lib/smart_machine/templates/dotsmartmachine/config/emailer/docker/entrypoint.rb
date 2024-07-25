@@ -54,7 +54,8 @@ unless File.exist?('/run/initial_container_start')
     '/etc/postfix/mysql-virtual-mailbox-maps.cf'
   ]
   update_envkeys_in(filepaths, envkeys)
-  system("chmod -R o-rwx /etc/postfix")
+  system("chgrp postfix /etc/postfix/mysql-*.cf")
+  system("chmod -R o-rwx /etc/postfix/mysql-*.cf")
 
   # Dovecot
   FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/10-auth.conf', '/etc/dovecot/conf.d/10-auth.conf'
