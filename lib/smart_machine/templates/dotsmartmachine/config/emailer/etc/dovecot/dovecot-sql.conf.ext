@@ -86,7 +86,7 @@ connect = host=%<mysql_host>s port=%<mysql_port>s dbname=%<mysql_database_name>s
 #
 #default_pass_scheme = MD5
 ##### SmartMachine Begin.
-default_pass_scheme = SHA512-CRYPT
+default_pass_scheme = BLF-CRYPT
 ##### SmartMachine Close.
 
 # passdb query to retrieve the password. It can return fields:
