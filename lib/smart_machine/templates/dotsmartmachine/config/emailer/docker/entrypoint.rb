@@ -76,6 +76,18 @@ unless File.exist?('/run/initial_container_start')
   FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/15-mailboxes.conf', '/etc/dovecot/conf.d/15-mailboxes.conf'
   FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/20-imap.conf', '/etc/dovecot/conf.d/20-imap.conf'
   FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/20-lmtp.conf', '/etc/dovecot/conf.d/20-lmtp.conf'
+  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/90-quota.conf', '/etc/dovecot/conf.d/90-quota.conf'
+  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/90-sieve.conf', '/etc/dovecot/conf.d/90-sieve.conf'
+
+  FileUtils.mkdir '/etc/dovecot/sieve'
+  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/sieve/learn-ham.sh', '/etc/dovecot/sieve/learn-ham.sh'
+  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/sieve/learn-spam.sh', '/etc/dovecot/sieve/learn-spam.sh'
+  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/sieve/learn-ham.sieve', '/etc/dovecot/sieve/learn-ham.sieve'
+  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/sieve/learn-spam.sieve', '/etc/dovecot/sieve/learn-spam.sieve'
+
+  FileUtils.mkdir '/etc/dovecot/sieve-after'
+  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/sieve-after/spam-to-folder.sieve', '/etc/dovecot/sieve-after/spam-to-folder.sieve'
+
   FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/dovecot-sql.conf.ext', '/etc/dovecot/dovecot-sql.conf.ext'
 
   FileUtils.cp '/smartmachine/config/emailer/usr/local/bin/quota-warning.sh', '/usr/local/bin/quota-warning.sh'
@@ -91,6 +103,25 @@ unless File.exist?('/run/initial_container_start')
   system("useradd -g vmail -u 5000 vmail -d /var/vmail")
   system("chown -R vmail:vmail /var/vmail")
 
+  system("sievec /etc/dovecot/sieve/learn-ham.sieve")
+  system("sievec /etc/dovecot/sieve/learn-spam.sieve")
+  system("chmod u=rwx,go= /etc/dovecot/sieve/learn-*.sh")
+  system("chown vmail:vmail /etc/dovecot/sieve/learn-*.sh")
+  system("chmod u=rw,go= /etc/dovecot/sieve/learn-*.sieve")
+  system("chown vmail:vmail /etc/dovecot/sieve/learn-*.sieve")
+  system("chmod u=rw,go= /etc/dovecot/sieve/learn-*.svbin")
+  system("chown vmail:vmail /etc/dovecot/sieve/learn-*.svbin")
+
+  system("sievec /etc/dovecot/sieve-after/spam-to-folder.sieve")
+  system("chmod u=rw,go= /etc/dovecot/sieve-after/spam-to-folder.sieve")
+  system("chown vmail:vmail /etc/dovecot/sieve-after/spam-to-folder.sieve")
+  system("chmod u=rw,go= /etc/dovecot/sieve-after/spam-to-folder.svbin")
+  system("chown vmail:vmail /etc/dovecot/sieve-after/spam-to-folder.svbin")
+
+  system("chown root:root /etc/dovecot/dovecot-sql.conf.ext")
+  system("chmod go= /etc/dovecot/dovecot-sql.conf.ext")
+
+  system("chmod +x /usr/local/bin/quota-warning.sh")
 
   # Spamassassin
   FileUtils.cp '/smartmachine/config/emailer/etc/spamassassin/local.cf', '/etc/spamassassin/local.cf'
