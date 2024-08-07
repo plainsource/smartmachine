@@ -65,8 +65,8 @@ module SmartMachine
       def uper
         if system("docker image inspect #{@image}", [:out, :err] => File::NULL)
           FileUtils.mkdir_p("#{@home_dir}/machine/grids/emailer/#{@name}/backups")
-          FileUtils.mkdir_p("#{@home_dir}/machine/grids/emailer/#{@name}/mail")
-          FileUtils.mkdir_p("#{@home_dir}/machine/grids/emailer/#{@name}/opendkim")
+          FileUtils.mkdir_p("#{@home_dir}/machine/grids/emailer/#{@name}/data/vmail")
+          FileUtils.mkdir_p("#{@home_dir}/machine/grids/emailer/#{@name}/data/opendkim")
 
           # Setting entrypoint permission.
           system("chmod +x #{@home_dir}/machine/config/emailer/docker/entrypoint.rb")
@@ -106,11 +106,10 @@ module SmartMachine
             "--publish='995:995'",
             # "--publish='143:143'",
             "--publish='993:993'",
-            "--volume='#{@home_dir}/smartmachine/grids/nginx/certificates/#{@fqdn}/fullchain.pem:/etc/letsencrypt/live/#{@fqdn}/fullchain.pem:ro'",
-            "--volume='#{@home_dir}/smartmachine/grids/nginx/certificates/#{@fqdn}/key.pem:/etc/letsencrypt/live/#{@fqdn}/privkey.pem:ro'",
+            "--volume='#{@home_dir}/smartmachine/grids/nginx/certificates/#{@fqdn}:/etc/letsencrypt/live/#{@fqdn}:ro'",
             "--volume='#{@home_dir}/smartmachine/config/emailer:/smartmachine/config/emailer:ro'",
-            "--volume='#{@home_dir}/smartmachine/grids/emailer/#{@name}/mail:/var/mail'",
-            "--volume='#{@home_dir}/smartmachine/grids/emailer/#{@name}/opendkim:/etc/opendkim'",
+            "--volume='#{@home_dir}/smartmachine/grids/emailer/#{@name}/data/vmail:/var/vmail'",
+            "--volume='#{@home_dir}/smartmachine/grids/emailer/#{@name}/data/opendkim:/etc/opendkim'",
             "--entrypoint='/smartmachine/config/emailer/docker/entrypoint.rb'",
             "--tmpfs /run/tmpfs",
             "--init",
@@ -173,7 +172,7 @@ module SmartMachine
 	      apt-get install -y --no-install-recommends \
 	          rsyslog \
 	          postfix postfix-mysql \
-	          dovecot-core dovecot-imapd dovecot-pop3d dovecot-lmtpd dovecot-mysql \
+	          dovecot-managesieved dovecot-imapd dovecot-pop3d dovecot-lmtpd dovecot-mysql \
 	          spamassassin spamc \
 	          opendkim opendkim-tools \
                   postfix-policyd-spf-python postfix-pcre \

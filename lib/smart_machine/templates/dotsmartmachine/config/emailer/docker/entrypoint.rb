@@ -50,6 +50,7 @@ unless File.exist?('/run/initial_container_start')
   # Postfix
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/main.cf', '/etc/postfix/main.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/master.cf', '/etc/postfix/master.cf'
+  FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-sender-login-maps.cf', '/etc/postfix/mysql-sender-login-maps.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-maps.cf', '/etc/postfix/mysql-virtual-alias-maps.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-email2email.cf', '/etc/postfix/mysql-virtual-email2email.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-mailbox-domains.cf', '/etc/postfix/mysql-virtual-mailbox-domains.cf'
@@ -57,6 +58,7 @@ unless File.exist?('/run/initial_container_start')
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix-policyd-spf-python/policyd-spf.conf', '/etc/postfix-policyd-spf-python/policyd-spf.conf'
   filepaths = [
     '/etc/postfix/main.cf',
+    '/etc/postfix/mysql-sender-login-maps.cf',
     '/etc/postfix/mysql-virtual-alias-maps.cf',
     '/etc/postfix/mysql-virtual-email2email.cf',
     '/etc/postfix/mysql-virtual-mailbox-domains.cf',
@@ -71,21 +73,24 @@ unless File.exist?('/run/initial_container_start')
   FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/10-mail.conf', '/etc/dovecot/conf.d/10-mail.conf'
   FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/10-master.conf', '/etc/dovecot/conf.d/10-master.conf'
   FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/10-ssl.conf', '/etc/dovecot/conf.d/10-ssl.conf'
-  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/auth-sql.conf.ext', '/etc/dovecot/conf.d/auth-sql.conf.ext'
+  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/15-mailboxes.conf', '/etc/dovecot/conf.d/15-mailboxes.conf'
+  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/20-imap.conf', '/etc/dovecot/conf.d/20-imap.conf'
+  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/conf.d/20-lmtp.conf', '/etc/dovecot/conf.d/20-lmtp.conf'
   FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/dovecot-sql.conf.ext', '/etc/dovecot/dovecot-sql.conf.ext'
-  FileUtils.cp '/smartmachine/config/emailer/etc/dovecot/dovecot.conf', '/etc/dovecot/dovecot.conf'
+
+  FileUtils.cp '/smartmachine/config/emailer/usr/local/bin/quota-warning.sh', '/usr/local/bin/quota-warning.sh'
+
   filepaths = [
     '/etc/dovecot/conf.d/10-ssl.conf',
     '/etc/dovecot/dovecot-sql.conf.ext',
-    '/etc/dovecot/dovecot.conf'
+    '/usr/local/bin/quota-warning.sh'
   ]
   update_envkeys_in(filepaths, envkeys)
-  system("mkdir -p /var/mail/vhosts/#{envkeys[:mailname]}")
+
   system("groupadd -g 5000 vmail")
-  system("useradd -g vmail -u 5000 vmail -d /var/mail")
-  system("chown -R vmail:vmail /var/mail")
-  system("chown -R vmail:dovecot /etc/dovecot")
-  system("chmod -R o-rwx /etc/dovecot")
+  system("useradd -g vmail -u 5000 vmail -d /var/vmail")
+  system("chown -R vmail:vmail /var/vmail")
+
 
   # Spamassassin
   FileUtils.cp '/smartmachine/config/emailer/etc/spamassassin/local.cf', '/etc/spamassassin/local.cf'
@@ -126,6 +131,10 @@ unless File.exist?('/run/initial_container_start')
   FileUtils.mkdir_p '/var/lib/haproxy/dev'
   FileUtils.mkdir_p '/run/haproxy'
   FileUtils.cp '/smartmachine/config/emailer/etc/haproxy/haproxy.cfg', '/etc/haproxy/haproxy.cfg'
+  filepaths = [
+    '/etc/haproxy/haproxy.cfg'
+  ]
+  update_envkeys_in(filepaths, envkeys)
 
   # Monit
   FileUtils.cp '/smartmachine/config/emailer/etc/monit/monitrc', '/etc/monit/monitrc'
