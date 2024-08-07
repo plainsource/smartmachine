@@ -8,6 +8,14 @@ emailerone:
   mysql_user: <%= SmartMachine.credentials.dig(:emailerone, :mysql_user) %>
   mysql_password: <%= SmartMachine.credentials.dig(:emailerone, :mysql_password) %>
   mysql_database_name: <%= SmartMachine.credentials.dig(:emailerone, :mysql_database_name) %>
+  monit_smtp_email_name: "Your Emailer One"
+  monit_smtp_email_address: "yourmachineemailerone@yourdomain.com"
+  monit_smtp_host: "youremailerone.yourdomain.com"
+  monit_smtp_port: 587
+  monit_smtp_username: <%= SmartMachine.credentials.dig(:emailerone, :monit_smtp_username) %>
+  monit_smtp_password: <%= SmartMachine.credentials.dig(:emailerone, :monit_smtp_password) %>
+  oracle_ips_allowed: []
+  oracle_deflect_url: "https://yourdomain.com"
 
 # emailertwo:
 #   fqdn: "youremailertwo.yourdomain.com"
@@ -19,3 +27,11 @@ emailerone:
 #   mysql_user: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_user) %>
 #   mysql_password: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_password) %>
 #   mysql_database_name: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_database_name) %>
+#   monit_smtp_email_name: "Your Emailer Two"
+#   monit_smtp_email_address: "yourmachineemailertwo@yourdomain.com"
+#   monit_smtp_host: "youremailertwo.yourdomain.com"
+#   monit_smtp_port: 587
+#   monit_smtp_username: <%= SmartMachine.credentials.dig(:emailertwo, :monit_smtp_username) %>
+#   monit_smtp_password: <%= SmartMachine.credentials.dig(:emailertwo, :monit_smtp_password) %>
+#   oracle_ips_allowed: []
+#   oracle_deflect_url: "https://yourdomain.com"

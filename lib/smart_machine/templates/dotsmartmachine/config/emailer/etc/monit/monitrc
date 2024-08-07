@@ -85,7 +85,7 @@ set pidfile /run/tmpfs/monit.pid
 #                backup.bar.baz port 10025,  # backup mailserver on port 10025
 #                localhost                   # fallback relay
 ##### SmartMachine Begin.
-#set mailserver %<fqdn>s port 587
+set mailserver %<monit_smtp_host>s port %<monit_smtp_port>s username "%<monit_smtp_username>s" password "%<monit_smtp_password>s" using SSL using HOSTNAME %<container_name>s.%<fqdn>s
 ##### SmartMachine Close.
 #
 #
@@ -140,7 +140,27 @@ set pidfile /run/tmpfs/monit.pid
 #
 # set mail-format { from: monit@foo.bar }
 ##### SmartMachine Begin.
-#set mail-format { from: Monit <monit@%<mailname>s> }
+set mail-format {
+  from:    %<monit_smtp_email_name>s <%<monit_smtp_email_address>s>
+  subject: Monit | $SERVICE | $EVENT
+  message:
+While monitoring the system, I observed a change and have performed the actions you had asked.
+
+Date:        $DATE
+Timezone:    %<timezone>s
+Host:        $HOST
+FQDN:        %<fqdn>s
+Container:   %<container_name>s
+Service:     $SERVICE
+Event:       $EVENT
+Action:      $ACTION
+Description: $DESCRIPTION
+
+Please check if you need to do something about it further.
+
+Your Faithful Employee,
+Monit
+}
 ##### SmartMachine Close.
 #
 #
@@ -150,7 +170,7 @@ set pidfile /run/tmpfs/monit.pid
 #
 # set alert sysadm@foo.bar                       # receive all alerts
 ##### SmartMachine Begin.
-#set alert %<sysadmin_email>s
+set alert %<sysadmin_email>s
 ##### SmartMachine Close.
 #
 ## Do not alert when Monit starts, stops or performs a user initiated action.

@@ -15,6 +15,14 @@ module SmartMachine
         @mysql_user = config.dig(:mysql_user)
         @mysql_password = config.dig(:mysql_password)
         @mysql_database_name = config.dig(:mysql_database_name)
+        @monit_smtp_email_name = config.dig(:monit_smtp_email_name)
+        @monit_smtp_email_address = config.dig(:monit_smtp_email_address)
+        @monit_smtp_host = config.dig(:monit_smtp_host)
+        @monit_smtp_port = config.dig(:monit_smtp_port)
+        @monit_smtp_username = config.dig(:monit_smtp_username)
+        @monit_smtp_password = config.dig(:monit_smtp_password)
+        @oracle_ips_allowed = config.dig(:oracle_ips_allowed)
+        @oracle_deflect_url = config.dig(:oracle_deflect_url)
 
         @name = name.to_s
         @home_dir = File.expand_path('~')
@@ -82,6 +90,14 @@ module SmartMachine
             "--env MYSQL_USER='#{@mysql_user}'",
             "--env MYSQL_PASSWORD='#{@mysql_password}'",
             "--env MYSQL_DATABASE_NAME='#{@mysql_database_name}'",
+            "--env MONIT_SMTP_EMAIL_NAME='#{@monit_smtp_email_name}'",
+            "--env MONIT_SMTP_EMAIL_ADDRESS='#{@monit_smtp_email_address}'",
+            "--env MONIT_SMTP_HOST='#{@monit_smtp_host}'",
+            "--env MONIT_SMTP_PORT='#{@monit_smtp_port}'",
+            "--env MONIT_SMTP_USERNAME='#{@monit_smtp_username}'",
+            "--env MONIT_SMTP_PASSWORD='#{@monit_smtp_password}'",
+            "--env ORACLE_IPS_ALLOWED='#{@oracle_ips_allowed.join(' ')}'",
+            "--env ORACLE_DEFLECT_URL='#{@oracle_deflect_url}'",
             "--expose='80'",
             "--publish='25:25'",
             # "--publish='465:465'",

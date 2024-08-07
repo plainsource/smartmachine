@@ -31,6 +31,15 @@ unless File.exist?('/run/initial_container_start')
     mysql_user: ENV.delete('MYSQL_USER'),
     mysql_password: ENV.delete('MYSQL_PASSWORD'),
     mysql_database_name: ENV.delete('MYSQL_DATABASE_NAME'),
+    monit_smtp_email_name: ENV.delete('MONIT_SMTP_EMAIL_NAME'),
+    monit_smtp_email_address: ENV.delete('MONIT_SMTP_EMAIL_ADDRESS'),
+    monit_smtp_host: ENV.delete('MONIT_SMTP_HOST'),
+    monit_smtp_port: ENV.delete('MONIT_SMTP_PORT'),
+    monit_smtp_username: ENV.delete('MONIT_SMTP_USERNAME'),
+    monit_smtp_password: ENV.delete('MONIT_SMTP_PASSWORD'),
+    oracle_ips_allowed: ENV.delete('ORACLE_IPS_ALLOWED'),
+    oracle_deflect_url: ENV.delete('ORACLE_DEFLECT_URL'),
+    timezone: `cat /etc/timezone`.chomp
   }
 
   # rsyslog

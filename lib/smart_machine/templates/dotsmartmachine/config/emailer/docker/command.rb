@@ -5,7 +5,7 @@ STDOUT.sync = true
 
 class Services
   def initialize
-    @services = %w(rsyslog haproxy spamassassin opendkim postfix dovecot)
+    @services = %w(rsyslog haproxy spamassassin spamassassin.update opendkim postfix dovecot)
   end
 
   def start
@@ -23,7 +23,7 @@ class Services
 
     puts "Stopping Services... SIGNAL: SIG#{Signal.signame(signo)}."
     system("monit quit")
-    sleep(1)
+    sleep(3)
     @services.reverse.each { |service| system("monit stop #{service}") }
 
     puts "Flushing Logtailer..."
