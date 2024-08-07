@@ -85,9 +85,6 @@ connect = host=%<mysql_host>s port=%<mysql_port>s dbname=%<mysql_database_name>s
 # http://wiki2.dovecot.org/Authentication/PasswordSchemes
 #
 #default_pass_scheme = MD5
-##### SmartMachine Begin.
-default_pass_scheme = BLF-CRYPT
-##### SmartMachine Close.
 
 # passdb query to retrieve the password. It can return fields:
 #   password - The user's password. This field must be returned.
@@ -120,7 +117,7 @@ default_pass_scheme = BLF-CRYPT
 #  SELECT username, domain, password \
 #  FROM users WHERE username = '%n' AND domain = '%d'
 ##### SmartMachine Begin.
-password_query = SELECT email as user, password FROM virtual_users WHERE email='%u';
+password_query = SELECT password FROM virtual_users WHERE email='%u'
 ##### SmartMachine Close.
 
 # userdb query to retrieve the user information. It can return fields:
@@ -142,6 +139,13 @@ password_query = SELECT email as user, password FROM virtual_users WHERE email='
 #user_query = \
 #  SELECT home, uid, gid \
 #  FROM users WHERE username = '%n' AND domain = '%d'
+##### SmartMachine Begin.
+user_query = SELECT email as user, \
+  concat('*:bytes=', quota_bytes) AS quota_rule, \
+  '/var/vmail/%d/%n' AS home, \
+  5000 AS uid, 5000 AS gid \
+  FROM virtual_users WHERE email='%u'
+##### SmartMachine Close.
 
 # If you wish to avoid two SQL lookups (passdb + userdb), you can use
 # userdb prefetch instead of userdb sql in dovecot.conf. In that case you'll
@@ -154,3 +158,6 @@ password_query = SELECT email as user, password FROM virtual_users WHERE email='
 
 # Query to get a list of all usernames.
 #iterate_query = SELECT username AS user FROM users
+##### SmartMachine Begin.
+iterate_query = SELECT email AS user FROM virtual_users
+##### SmartMachine Close.
