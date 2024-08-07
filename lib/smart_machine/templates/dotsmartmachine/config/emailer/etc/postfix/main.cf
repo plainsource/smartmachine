@@ -26,18 +26,19 @@ compatibility_level = 2
 # TLS parameters
 ##### SmartMachine Begin.
 #smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
-#smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
-#smtpd_tls_security_level=may
 smtpd_tls_cert_file=/etc/letsencrypt/live/%<fqdn>s/fullchain.pem
-smtpd_tls_key_file=/etc/letsencrypt/live/%<fqdn>s/privkey.pem
-smtpd_use_tls=yes
-smtpd_tls_auth_only = yes
-smtpd_tls_security_level = may
-smtpd_sasl_security_options = noanonymous, noplaintext
-smtpd_sasl_tls_security_options = noanonymous
-smtpd_sasl_type = dovecot
-smtpd_sasl_path = private/auth
-smtpd_sasl_auth_enable = yes
+#smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_tls_key_file=/etc/letsencrypt/live/%<fqdn>s/key.pem
+smtpd_tls_security_level=may
+smtpd_tls_auth_only=yes
+
+smtpd_sasl_type=dovecot
+smtpd_sasl_path=private/auth
+smtpd_sasl_auth_enable=yes
+smtpd_sasl_security_options=noanonymous, noplaintext
+smtpd_sasl_tls_security_options=noanonymous
+
+smtpd_sender_login_maps=mysql:/etc/postfix/mysql-sender-login-maps.cf
 ##### SmartMachine Close.
 
 smtp_tls_CApath=/etc/ssl/certs
@@ -46,8 +47,8 @@ smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 
 ##### SmartMachine Begin.
 smtpd_helo_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_invalid_helo_hostname, reject_non_fqdn_helo_hostname
-smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_non_fqdn_recipient, reject_unknown_recipient_domain, reject_unlisted_recipient, reject_unauth_destination, check_policy_service unix:private/policyd-spf
-smtpd_sender_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_non_fqdn_sender, reject_unknown_sender_domain
+smtpd_sender_restrictions = reject_sender_login_mismatch, permit_mynetworks, permit_sasl_authenticated, reject_non_fqdn_sender, reject_unknown_sender_domain
+smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_non_fqdn_recipient, reject_unknown_recipient_domain, reject_unlisted_recipient, reject_unauth_destination, check_policy_service unix:private/policyd-spf, check_policy_service unix:private/quota-status
 ##### SmartMachine Close.
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 ##### SmartMachine Begin.
@@ -86,10 +87,7 @@ strict_rfc821_envelopes = yes
 #smtpd_etrn_restrictions = reject
 #smtpd_reject_unlisted_sender = yes
 #smtpd_reject_unlisted_recipient = yes
-smtpd_delay_reject = yes
 smtpd_helo_required = yes
-smtp_always_send_ehlo = yes
-#smtpd_hard_error_limit = 1
 smtpd_timeout = 30s
 smtp_helo_timeout = 15s
 smtp_rcpt_timeout = 15s
