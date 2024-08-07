@@ -103,7 +103,7 @@ unless File.exist?('/run/initial_container_start')
     IO.write("/etc/opendkim/trusted.hosts",
              "127.0.0.1\n::1\nlocalhost\n#{envkeys[:fqdn]}\n#{envkeys[:mailname]}\n")
     Dir.chdir("/etc/opendkim/keys") do
-      raise "Could not create DKIM keys." unless system("opendkim-genkey -b 1024 -h rsa-sha256 -r -s #{key_selector} -d #{envkeys[:mailname]} -v")
+      raise "Could not create DKIM keys." unless system("opendkim-genkey -b 2048 -h rsa-sha256 -r -s #{key_selector} -d #{envkeys[:mailname]} -v")
       FileUtils.mv("#{key_selector}.private", "#{key_filename}.private")
       FileUtils.mv("#{key_selector}.txt", "#{key_filename}.txt")
     end
