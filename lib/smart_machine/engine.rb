@@ -29,6 +29,7 @@ module SmartMachine
       puts "-----> Creating image for Engine ... "
       command = [
         "docker image build --quiet --tag #{engine_image_name_with_version}",
+        "--build-arg TZDATA_TIMEZONE='#{SmartMachine.config.engine.dig(:engineone).dig(:timezone)}'",
         "--build-arg SMARTMACHINE_MASTER_KEY=#{SmartMachine::Credentials.new.read_key}",
         "--build-arg USER_NAME=`id -un`",
         "--build-arg USER_UID=`id -u`",
@@ -101,6 +102,11 @@ module SmartMachine
       file = <<~'DOCKERFILE'
         FROM ruby:%<smartmachine_ruby_version>s-bullseye
 	LABEL maintainer="plainsource <plainsource@humanmind.me>"
+
+	# Setting Localtime & Timezone using tzdata
+	ARG TZDATA_TIMEZONE
+	RUN ln -sf /usr/share/zoneinfo/$TZDATA_TIMEZONE /etc/localtime && \
+	    dpkg-reconfigure -f noninteractive tzdata
 
 	# User
 	# --- Fix to change docker gid to 998 (if it is in use) so that addgroup is free to create a group with docker gid.

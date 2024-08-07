@@ -8,10 +8,21 @@ module SmartMachine
     end
 
     def config
-      @config ||= OpenStruct.new(grids: grids, network: network)
+      @config ||= OpenStruct.new(engine: engine, grids: grids, network: network)
     end
 
     private
+
+    def engine
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/engine.yml always exists
+      if File.exist? "config/engine.yml"
+        deserialize(IO.binread("config/engine.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/engine.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/engine.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
 
     def grids
       @grids ||= OpenStruct.new(elasticsearch: elasticsearch, emailer: emailer, minio: minio, mysql: mysql, nextcloud: nextcloud, phpmyadmin: phpmyadmin, prereceiver: prereceiver, redis: redis, terminal: terminal)

@@ -114,6 +114,7 @@ module SmartMachine
         'config/phpmyadmin/***',
         'config/credentials.yml.enc',
         'config/emailer.yml',
+        'config/engine.yml',
         'config/environment.rb',
         'config/elasticsearch.yml',
         'config/minio.yml',
