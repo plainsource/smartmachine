@@ -119,7 +119,7 @@ module SmartMachine
           ]
           if system(command.compact.join(" "), out: File::NULL)
             @networks.each do |network|
-              system("docker network connect #{network} #{@name}")
+              system("docker network connect --alias #{@fqdn} #{network} #{@name}")
             end
 
             puts "done"
