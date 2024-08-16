@@ -51,16 +51,20 @@ unless File.exist?('/run/initial_container_start')
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/main.cf', '/etc/postfix/main.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/master.cf', '/etc/postfix/master.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-sender-login-maps.cf', '/etc/postfix/mysql-sender-login-maps.cf'
-  FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-maps.cf', '/etc/postfix/mysql-virtual-alias-maps.cf'
-  FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-email2email.cf', '/etc/postfix/mysql-virtual-email2email.cf'
+  FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-domains.cf', '/etc/postfix/mysql-virtual-alias-domains.cf'
+  FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-maps-domains.cf', '/etc/postfix/mysql-virtual-alias-maps-domains.cf'
+  FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-maps-users.cf', '/etc/postfix/mysql-virtual-alias-maps-users.cf'
+  FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-maps-userstothemselves.cf', '/etc/postfix/mysql-virtual-alias-maps-userstothemselves.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-mailbox-domains.cf', '/etc/postfix/mysql-virtual-mailbox-domains.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-mailbox-maps.cf', '/etc/postfix/mysql-virtual-mailbox-maps.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix-policyd-spf-python/policyd-spf.conf', '/etc/postfix-policyd-spf-python/policyd-spf.conf'
   filepaths = [
     '/etc/postfix/main.cf',
     '/etc/postfix/mysql-sender-login-maps.cf',
-    '/etc/postfix/mysql-virtual-alias-maps.cf',
-    '/etc/postfix/mysql-virtual-email2email.cf',
+    '/etc/postfix/mysql-virtual-alias-domains.cf',
+    '/etc/postfix/mysql-virtual-alias-maps-domains.cf',
+    '/etc/postfix/mysql-virtual-alias-maps-users.cf',
+    '/etc/postfix/mysql-virtual-alias-maps-userstothemselves.cf',
     '/etc/postfix/mysql-virtual-mailbox-domains.cf',
     '/etc/postfix/mysql-virtual-mailbox-maps.cf'
   ]

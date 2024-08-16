@@ -3,5 +3,5 @@ user = %<mysql_user>s
 password = %<mysql_password>s
 hosts = %<mysql_host>s:%<mysql_port>s
 dbname = %<mysql_database_name>s
-query = SELECT 1 FROM virtual_domains WHERE name='%s' AND destination_name IS NULL
+query = SELECT 1 FROM virtual_domains WHERE name='%s' AND destination_name IS NOT NULL
 ##### SmartMachine Close.
