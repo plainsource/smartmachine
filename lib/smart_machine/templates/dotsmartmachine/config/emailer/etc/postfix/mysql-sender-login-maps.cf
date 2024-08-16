@@ -3,5 +3,5 @@ user = %<mysql_user>s
 password = %<mysql_password>s
 hosts = %<mysql_host>s:%<mysql_port>s
 dbname = %<mysql_database_name>s
-query = SELECT email FROM virtual_users WHERE email='%s' UNION SELECT destination FROM virtual_aliases WHERE source='%s'
+query = SELECT email FROM virtual_users WHERE email IN ('%s', (SELECT CONCAT('%u', '@', destination_name) FROM virtual_domains WHERE name='%d' AND destination_name IS NOT NULL)) UNION SELECT destination FROM virtual_aliases WHERE source IN ('%s', (SELECT CONCAT('%u', '@', destination_name) FROM virtual_domains WHERE name='%d' AND destination_name IS NOT NULL))
 ##### SmartMachine Close.
