@@ -8,6 +8,7 @@ require 'smart_machine/commands/grid_commands/nginx'
 require 'smart_machine/commands/grid_commands/phpmyadmin'
 require 'smart_machine/commands/grid_commands/prereceiver'
 require 'smart_machine/commands/grid_commands/redis'
+require 'smart_machine/commands/grid_commands/roundcube'
 require 'smart_machine/commands/grid_commands/terminal'
 
 module SmartMachine
@@ -41,6 +42,9 @@ module SmartMachine
 
       desc "redis", "Run redis grid commands"
       subcommand "redis", GridCommands::Redis
+
+      desc "roundcube", "Run roundcube grid commands"
+      subcommand "roundcube", GridCommands::Roundcube
 
       desc "terminal", "Run terminal grid commands"
       subcommand "terminal", GridCommands::Terminal

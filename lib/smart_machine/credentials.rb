@@ -72,6 +72,10 @@ module SmartMachine
 			    database_name: #{SecureRandom.hex(8)}
 			  redisone:
 			    password: #{SecureRandom.hex(16)}
+			  roundcubeone:
+			    database_user: #{SecureRandom.hex(8)}
+			    database_pass: #{SecureRandom.hex(16)}
+			    database_name: #{SecureRandom.hex(8)}
 			  nextcloudone:
 			    admin_user: #{SecureRandom.hex(8)}
 			    admin_password: #{SecureRandom.hex(16)}

@@ -112,6 +112,8 @@ module SmartMachine
         'config/mysql/schedule.rb',
         'config/phpmyadmin',
         'config/phpmyadmin/***',
+        'config/roundcube',
+        'config/roundcube/***',
         'config/credentials.yml.enc',
         'config/emailer.yml',
         'config/engine.yml',
@@ -124,6 +126,7 @@ module SmartMachine
         'config/phpmyadmin.yml',
         'config/prereceiver.yml',
         'config/redis.yml',
+        'config/roundcube.yml',
         'config/terminal.yml',
 
         'grids',
