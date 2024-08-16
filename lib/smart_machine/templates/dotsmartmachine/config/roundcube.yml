@@ -1,0 +1,41 @@
+roundcubeone:
+  fqdn: "yourroundcubeone.yourdomain.com"
+  image: "roundcube/roundcubemail:1.6.8-apache"
+  sysadmin_email: "adminname@yourdomain.com"
+  networks: ["mysqlone-network"]
+  database_type: "mysql"
+  database_host: mysqlone
+  database_port: 3306
+  database_user: <%= SmartMachine.credentials.dig(:roundcubeone, :database_user) %>
+  database_pass: <%= SmartMachine.credentials.dig(:roundcubeone, :database_pass) %>
+  database_name: <%= SmartMachine.credentials.dig(:roundcubeone, :database_name) %>
+  mail_host: "ssl://youremailerone.yourdomain.com"
+  mail_port: 993
+  smtp_host: "tls://youremailerone.yourdomain.com"
+  smtp_port: 587
+  request_path: "/"
+  plugins: ["password", "managesieve", "archive", "zipdownload"]
+  skin: "elastic"
+  upload_max_filesize: "5M"
+  aspell_dictionaries: ["en"]
+
+# roundcubetwo:
+#   fqdn: "yourroundcubetwo.yourdomain.com"
+#   image: "roundcube/roundcubemail:1.6.8-apache"
+#   sysadmin_email: "adminname@yourdomain.com"
+#   networks: ["mysqlone-network"]
+#   database_type: "mysql"
+#   database_host: mysqlone
+#   database_port: 3306
+#   database_user: <%= SmartMachine.credentials.dig(:roundcubetwo, :database_user) %>
+#   database_pass: <%= SmartMachine.credentials.dig(:roundcubetwo, :database_pass) %>
+#   database_name: <%= SmartMachine.credentials.dig(:roundcubetwo, :database_name) %>
+#   mail_host: "ssl://youremailerone.yourdomain.com"
+#   mail_port: 993
+#   smtp_host: "tls://youremailerone.yourdomain.com"
+#   smtp_port: 587
+#   request_path: "/"
+#   plugins: ["password", "managesieve", "archive", "zipdownload"]
+#   skin: "elastic"
+#   upload_max_filesize: "5M"
+#   aspell_dictionaries: ["en"]

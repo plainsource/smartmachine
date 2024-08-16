@@ -78,6 +78,7 @@ module SmartMachine
             "docker create",
             "--name='#{@name}'",
             "--env VIRTUAL_HOST=#{@fqdn}",
+            "--env VIRTUAL_PATH='/'",
             "--env LETSENCRYPT_HOST=#{@fqdn}",
             "--env LETSENCRYPT_EMAIL=#{@sysadmin_email}",
             "--env LETSENCRYPT_TEST=false",
