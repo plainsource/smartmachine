@@ -53,6 +53,7 @@ unless File.exist?('/run/initial_container_start')
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-sender-login-maps.cf', '/etc/postfix/mysql-sender-login-maps.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-domains.cf', '/etc/postfix/mysql-virtual-alias-domains.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-maps-domains.cf', '/etc/postfix/mysql-virtual-alias-maps-domains.cf'
+  FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-maps-masters.cf', '/etc/postfix/mysql-virtual-alias-maps-masters.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-maps-users.cf', '/etc/postfix/mysql-virtual-alias-maps-users.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-alias-maps-userstothemselves.cf', '/etc/postfix/mysql-virtual-alias-maps-userstothemselves.cf'
   FileUtils.cp '/smartmachine/config/emailer/etc/postfix/mysql-virtual-mailbox-domains.cf', '/etc/postfix/mysql-virtual-mailbox-domains.cf'
@@ -63,6 +64,7 @@ unless File.exist?('/run/initial_container_start')
     '/etc/postfix/mysql-sender-login-maps.cf',
     '/etc/postfix/mysql-virtual-alias-domains.cf',
     '/etc/postfix/mysql-virtual-alias-maps-domains.cf',
+    '/etc/postfix/mysql-virtual-alias-maps-masters.cf',
     '/etc/postfix/mysql-virtual-alias-maps-users.cf',
     '/etc/postfix/mysql-virtual-alias-maps-userstothemselves.cf',
     '/etc/postfix/mysql-virtual-mailbox-domains.cf',

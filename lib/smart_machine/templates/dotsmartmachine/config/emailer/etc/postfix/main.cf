@@ -84,7 +84,7 @@ virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf
 # Domains that are aliases of other domains
 virtual_alias_domains = mysql:/etc/postfix/mysql-virtual-alias-domains.cf
 # Alias mappings for domains, users and users to themselves.
-virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps-domains.cf, mysql:/etc/postfix/mysql-virtual-alias-maps-users.cf, mysql:/etc/postfix/mysql-virtual-alias-maps-userstothemselves.cf
+virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps-domains.cf, mysql:/etc/postfix/mysql-virtual-alias-maps-masters.cf, mysql:/etc/postfix/mysql-virtual-alias-maps-users.cf, mysql:/etc/postfix/mysql-virtual-alias-maps-userstothemselves.cf
 
 # Even more Restrictions and MTA params
 disable_vrfy_command = yes
