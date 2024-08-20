@@ -47,6 +47,7 @@ module SmartMachine
 
                   ## Docker
                   VIRTUAL_HOST=#{@appname}.#{appdomain}
+                  VIRTUAL_PATH='/'
                   LETSENCRYPT_HOST=#{@appname}.#{appdomain}
                   LETSENCRYPT_EMAIL=#{@username}
                   LETSENCRYPT_TEST=false
