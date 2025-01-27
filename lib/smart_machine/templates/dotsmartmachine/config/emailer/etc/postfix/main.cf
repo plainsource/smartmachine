@@ -86,6 +86,11 @@ virtual_alias_domains = mysql:/etc/postfix/mysql-virtual-alias-domains.cf
 # Alias mappings for domains, users and users to themselves.
 virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps-domains.cf, mysql:/etc/postfix/mysql-virtual-alias-maps-masters.cf, mysql:/etc/postfix/mysql-virtual-alias-maps-users.cf, mysql:/etc/postfix/mysql-virtual-alias-maps-userstothemselves.cf
 
+# Setting Message Size (default: 10240000).
+# Changed to 37.5MB to allow approximately 25MB of file attachments (includes mime expansion bloat).
+# https://serverfault.com/questions/189508/considering-mime-expansion-bloat-how-does-that-affect-settings-for-exchange-200/189510#189510
+message_size_limit = 39321600
+
 # Even more Restrictions and MTA params
 disable_vrfy_command = yes
 strict_rfc821_envelopes = yes
