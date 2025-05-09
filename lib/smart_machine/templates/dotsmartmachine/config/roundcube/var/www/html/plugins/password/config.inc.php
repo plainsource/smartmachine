@@ -66,7 +66,7 @@ $config['password_algorithm_prefix'] = '';
 // Used for password_algorithm = 'dovecot'.
 // $config['password_dovecotpw'] = '/usr/local/sbin/doveadm pw'; // for dovecot-2.x
 //$config['password_dovecotpw'] = '/usr/local/sbin/dovecotpw'; // for dovecot-1.x
-$config['password_dovecotpw'] = '/usr/local/sbin/doveadm pw';
+$config['password_dovecotpw'] = '/usr/bin/doveadm pw';
 
 // Dovecot password scheme.
 // Used for password_algorithm = 'dovecot'.
@@ -118,7 +118,8 @@ $config['password_http_client'] = [];
 // %t - hostname without the first part
 // %d - domain (http hostname $_SERVER['HTTP_HOST'] without the first part)
 // %z - IMAP domain (IMAP hostname without the first part)
-$config['password_db_dsn'] = '';
+//$config['password_db_dsn'] = '';
+$config['password_db_dsn'] = '%<roundcubemail_plugins_password_database_type>s://%<roundcubemail_plugins_password_database_user>s:%<roundcubemail_plugins_password_database_pass>s@%<roundcubemail_plugins_password_database_host>s/%<roundcubemail_plugins_password_database_name>s';
 
 // The SQL query used to change the password.
 // The query can contain the following macros that will be expanded as follows:
