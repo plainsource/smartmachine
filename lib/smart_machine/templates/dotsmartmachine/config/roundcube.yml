@@ -15,7 +15,7 @@ roundcubeone:
   request_path: "/"
   plugins: ["password", "managesieve", "archive", "zipdownload"]
   plugins_password_database_type: "mysql"
-  plugins_password_database_host: "youremailerone.yourdomain.com"
+  plugins_password_database_host: mysqlone
   plugins_password_database_user: <%= SmartMachine.credentials.dig(:emailerone, :mysql_user) %>
   plugins_password_database_pass: <%= SmartMachine.credentials.dig(:emailerone, :mysql_password) %>
   plugins_password_database_name: <%= SmartMachine.credentials.dig(:emailerone, :mysql_database_name) %>
@@ -40,7 +40,7 @@ roundcubeone:
 #   request_path: "/"
 #   plugins: ["password", "managesieve", "archive", "zipdownload"]
 #   plugins_password_database_type: "mysql"
-#   plugins_password_database_host: "youremailertwo.yourdomain.com"
+#   plugins_password_database_host: mysqlone
 #   plugins_password_database_user: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_user) %>
 #   plugins_password_database_pass: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_password) %>
 #   plugins_password_database_name: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_database_name) %>
