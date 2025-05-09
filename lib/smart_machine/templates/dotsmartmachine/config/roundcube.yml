@@ -1,6 +1,5 @@
 roundcubeone:
   fqdn: "yourroundcubeone.yourdomain.com"
-  image: "roundcube/roundcubemail:1.6.8-apache"
   sysadmin_email: "adminname@yourdomain.com"
   networks: ["mysqlone-network"]
   database_type: "mysql"
@@ -15,13 +14,17 @@ roundcubeone:
   smtp_port: 587
   request_path: "/"
   plugins: ["password", "managesieve", "archive", "zipdownload"]
+  plugins_password_database_type: "mysql"
+  plugins_password_database_host: "youremailerone.yourdomain.com"
+  plugins_password_database_user: <%= SmartMachine.credentials.dig(:emailerone, :mysql_user) %>
+  plugins_password_database_pass: <%= SmartMachine.credentials.dig(:emailerone, :mysql_password) %>
+  plugins_password_database_name: <%= SmartMachine.credentials.dig(:emailerone, :mysql_database_name) %>
   skin: "elastic"
   upload_max_filesize: "5M"
   aspell_dictionaries: ["en"]
 
 # roundcubetwo:
 #   fqdn: "yourroundcubetwo.yourdomain.com"
-#   image: "roundcube/roundcubemail:1.6.8-apache"
 #   sysadmin_email: "adminname@yourdomain.com"
 #   networks: ["mysqlone-network"]
 #   database_type: "mysql"
@@ -30,12 +33,17 @@ roundcubeone:
 #   database_user: <%= SmartMachine.credentials.dig(:roundcubetwo, :database_user) %>
 #   database_pass: <%= SmartMachine.credentials.dig(:roundcubetwo, :database_pass) %>
 #   database_name: <%= SmartMachine.credentials.dig(:roundcubetwo, :database_name) %>
-#   mail_host: "ssl://youremailerone.yourdomain.com"
+#   mail_host: "ssl://youremailertwo.yourdomain.com"
 #   mail_port: 993
-#   smtp_host: "tls://youremailerone.yourdomain.com"
+#   smtp_host: "tls://youremailertwo.yourdomain.com"
 #   smtp_port: 587
 #   request_path: "/"
 #   plugins: ["password", "managesieve", "archive", "zipdownload"]
+#   plugins_password_database_type: "mysql"
+#   plugins_password_database_host: "youremailertwo.yourdomain.com"
+#   plugins_password_database_user: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_user) %>
+#   plugins_password_database_pass: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_password) %>
+#   plugins_password_database_name: <%= SmartMachine.credentials.dig(:emailertwo, :mysql_database_name) %>
 #   skin: "elastic"
 #   upload_max_filesize: "5M"
 #   aspell_dictionaries: ["en"]
