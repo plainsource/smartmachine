@@ -28,7 +28,7 @@ module SmartMachine
 
       puts "-----> Creating image for Engine ... "
       command = [
-        "docker image build --quiet --tag #{engine_image_name_with_version}",
+        "docker image build --tag #{engine_image_name_with_version}",
         "--build-arg TZDATA_TIMEZONE='#{SmartMachine.config.engine.dig(:engineone).dig(:timezone)}'",
         "--build-arg SMARTMACHINE_MASTER_KEY=#{SmartMachine::Credentials.new.read_key}",
         "--build-arg USER_NAME=`id -un`",
