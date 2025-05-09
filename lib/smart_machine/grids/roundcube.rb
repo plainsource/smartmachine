@@ -71,7 +71,6 @@ module SmartMachine
       def uper
         if system("docker image inspect #{@image}", [:out, :err] => File::NULL)
           FileUtils.mkdir_p("#{@home_dir}/machine/grids/roundcube/#{@name}/backups")
-          FileUtils.mkdir_p("#{@home_dir}/machine/grids/roundcube/#{@name}/data/html")
           FileUtils.mkdir_p("#{@home_dir}/machine/grids/roundcube/#{@name}/data/roundcube-temp")
 
           # Setting entrypoint permission.
@@ -115,7 +114,6 @@ module SmartMachine
             "--env ROUNDCUBEMAIL_DB_PASSWORD='#{@database_pass}'",
             "--env ROUNDCUBEMAIL_DB_NAME='#{@database_name}'",
             "--volume='#{@home_dir}/smartmachine/config/roundcube:/smartmachine/config/roundcube:ro'",
-            "--volume='#{@home_dir}/smartmachine/grids/roundcube/#{@name}/data/html:/var/www/html'",
             "--volume='#{@home_dir}/smartmachine/grids/roundcube/#{@name}/data/roundcube-temp:/tmp/roundcube-temp'",
             "--tmpfs /run/tmpfs",
             "--init",
