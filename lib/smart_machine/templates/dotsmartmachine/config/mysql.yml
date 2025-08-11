@@ -1,4 +1,5 @@
 mysqlone:
+  image: "mysql:8.0.43"
   port: 3306
   networks: networkone
   root_password: <%= SmartMachine.credentials.dig(:mysqlone, :root_password) %>
@@ -7,6 +8,7 @@ mysqlone:
   database_name: <%= SmartMachine.credentials.dig(:mysqlone, :database_name) %>
 
 # mysqltwo:
+#   image: "mysql:8.0.43"
 #   port: 3307
 #   networks: networkone
 #   root_password: <%= SmartMachine.credentials.dig(:mysqltwo, :root_password) %>

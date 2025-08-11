@@ -5,6 +5,7 @@ module SmartMachine
         config = SmartMachine.config.grids.mysql.dig(name.to_sym)
         raise "mysql config for #{name} not found." unless config
 
+        @image = config.dig(:image)
         @port = config.dig(:port)
         @networks = Array(config.dig(:networks))
         @root_password = config.dig(:root_password)
@@ -43,7 +44,7 @@ module SmartMachine
           "--volume='#{@home_dir}/smartmachine/grids/mysql/#{@name}/data:/var/lib/mysql'",
           "--restart='always'",
           "--network='#{@name}-network'",
-          "mysql:8.0.18"
+          @image
         ]
         if system(command.compact.join(" "), out: File::NULL)
           puts "done"
