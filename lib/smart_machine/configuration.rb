@@ -8,13 +8,24 @@ module SmartMachine
     end
 
     def config
-      @config ||= OpenStruct.new(grids: grids)
+      @config ||= OpenStruct.new(engine: engine, grids: grids, network: network)
     end
 
     private
 
+    def engine
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/engine.yml always exists
+      if File.exist? "config/engine.yml"
+        deserialize(IO.binread("config/engine.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/engine.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/engine.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
+
     def grids
-      @grids ||= OpenStruct.new(elasticsearch: elasticsearch, minio: minio, mysql: mysql, nextcloud: nextcloud, prereceiver: prereceiver, redis: redis, wireguard: wireguard)
+      @grids ||= OpenStruct.new(elasticsearch: elasticsearch, emailer: emailer, minio: minio, mysql: mysql, nextcloud: nextcloud, phpmyadmin: phpmyadmin, prereceiver: prereceiver, redis: redis, roundcube: roundcube, terminal: terminal, wireguard: wireguard)
     end
 
     def elasticsearch
@@ -23,6 +34,17 @@ module SmartMachine
         deserialize(IO.binread("config/elasticsearch.yml")).deep_symbolize_keys
       elsif File.exist? "#{File.expand_path('~')}/machine/config/elasticsearch.yml"
         deserialize(IO.binread("#{File.expand_path('~')}/machine/config/elasticsearch.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
+
+    def emailer
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/emailer.yml always exists
+      if File.exist? "config/emailer.yml"
+        deserialize(IO.binread("config/emailer.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/emailer.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/emailer.yml")).deep_symbolize_keys
       else
         {}
       end
@@ -61,6 +83,17 @@ module SmartMachine
       end
     end
 
+    def phpmyadmin
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/phpmyadmin.yml always exists
+      if File.exist? "config/phpmyadmin.yml"
+        deserialize(IO.binread("config/phpmyadmin.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/phpmyadmin.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/phpmyadmin.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
+
     def prereceiver
       # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/prereceiver.yml always exists
       if File.exist? "config/prereceiver.yml"
@@ -83,12 +116,45 @@ module SmartMachine
       end
     end
 
+    def roundcube
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/roundcube.yml always exists
+      if File.exist? "config/roundcube.yml"
+        deserialize(IO.binread("config/roundcube.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/roundcube.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/roundcube.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
+
+    def terminal
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/terminal.yml always exists
+      if File.exist? "config/terminal.yml"
+        deserialize(IO.binread("config/terminal.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/terminal.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/terminal.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
+
     def wireguard
       # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/wireguard.yml always exists
       if File.exist? "config/wireguard.yml"
         deserialize(IO.binread("config/wireguard.yml")).deep_symbolize_keys
       elsif File.exist? "#{File.expand_path('~')}/machine/config/wireguard.yml"
         deserialize(IO.binread("#{File.expand_path('~')}/machine/config/wireguard.yml")).deep_symbolize_keys
+      else
+        {}
+      end
+    end
+
+    def network
+      # Once the SmartMachine.config assignments in smart_machine.rb file has been removed, then this file exist condition can be removed to ensure that config/network.yml always exists
+      if File.exist? "config/network.yml"
+        deserialize(IO.binread("config/network.yml")).deep_symbolize_keys
+      elsif File.exist? "#{File.expand_path('~')}/machine/config/network.yml"
+        deserialize(IO.binread("#{File.expand_path('~')}/machine/config/network.yml")).deep_symbolize_keys
       else
         {}
       end

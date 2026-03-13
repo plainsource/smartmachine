@@ -8,7 +8,9 @@ module SmartMachine
 
       push if initial
 
-      pull
+      # Uncomment this if you want to implement pull in sync.
+      # Ideally please remove this functionality in favour of entire server folder backup feature.
+      #pull
       push
 
       puts "-----> Syncing SmartMachine Complete"
@@ -44,7 +46,7 @@ module SmartMachine
         "-e 'ssh -p #{SmartMachine.credentials.machine[:port]}'",
         "--rsync-path='smartengine syncer rsync'",
         "--delete",
-        "--include={#{files_list}}",
+        files_list.map { |regex| "--include='#{regex}'" }.join(" "),
         "--exclude=*"
       ]
 
@@ -61,6 +63,9 @@ module SmartMachine
 
         'grids/elasticsearch',
         'grids/elasticsearch/***',
+
+        'grids/emailer',
+        'grids/emailer/***',
 
         'grids/minio',
         'grids/minio/***',
@@ -80,16 +85,16 @@ module SmartMachine
         'grids/redis',
         'grids/redis/***',
 
-        'grids/scheduler',
-        'grids/scheduler/crontabs/***',
-
         'grids/solr',
         'grids/solr/solr/***',
+
+        'grids/terminal',
+        'grids/terminal/***',
 
         'grids/wireguard',
         'grids/wireguard/***',
       ]
-      files.join(',')
+      files
     end
 
     def push_files_list
@@ -104,16 +109,28 @@ module SmartMachine
         'bin/smartmachine',
 
         'config',
+        'config/emailer',
+        'config/emailer/***',
         'config/mysql',
         'config/mysql/schedule.rb',
+        'config/phpmyadmin',
+        'config/phpmyadmin/***',
+        'config/roundcube',
+        'config/roundcube/***',
         'config/credentials.yml.enc',
+        'config/emailer.yml',
+        'config/engine.yml',
         'config/environment.rb',
         'config/elasticsearch.yml',
         'config/minio.yml',
         'config/mysql.yml',
+        'config/network.yml',
         'config/nextcloud.yml',
+        'config/phpmyadmin.yml',
         'config/prereceiver.yml',
         'config/redis.yml',
+        'config/roundcube.yml',
+        'config/terminal.yml',
         'config/wireguard.yml',
 
         'grids',
@@ -125,17 +142,13 @@ module SmartMachine
         'grids/nginx/fastcgi.conf',
         'grids/nginx/nginx.tmpl',
 
-        'grids/scheduler',
-        'grids/scheduler/crontabs',
-        'grids/scheduler/crontabs/.keep',
-
         'grids/solr',
         'grids/solr/solr',
         'grids/solr/solr/.keep',
 
         'tmp/***',
       ]
-      files.join(',')
+      files
     end
   end
 end

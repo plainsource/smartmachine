@@ -25,9 +25,4 @@ when "prereceiver"
 	prereceiver = SmartMachine::Grids::Prereceiver.new
 	prereceiver.public_send(action, *ARGV)
 
-when "scheduler"
-	action = ARGV.shift
-	scheduler = SmartMachine::Grids::Scheduler.new
-	scheduler.public_send(action, *ARGV)
-
 end

@@ -26,5 +26,10 @@ module SmartMachine
       machine = SmartMachine::Machine.new
       machine.run_on_machine(commands: ["which smartengine | grep -q '/smartengine'"])
     end
+
+    def user_bash(command)
+      remove_envs = %w(RUBY_MAJOR RUBY_VERSION RUBY_DOWNLOAD_SHA256 GEM_HOME BUNDLE_APP_CONFIG BUNDLE_SILENCE_ROOT_WARNING)
+      'env -u ' + remove_envs.join(' -u ') + ' bash --login -c \'' + command + '\''
+    end
   end
 end

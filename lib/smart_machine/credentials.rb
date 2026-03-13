@@ -56,6 +56,12 @@ module SmartMachine
 			    root_password: #{SecureRandom.hex(16)}
 			    username: #{SecureRandom.hex(8)}
 			    password: #{SecureRandom.hex(16)}
+			  emailerone:
+			    mysql_user: #{SecureRandom.hex(8)}
+			    mysql_password: #{SecureRandom.hex(16)}
+			    mysql_database_name: #{SecureRandom.hex(8)}
+			    monit_smtp_username: yourmachineemailerone@yourdomain.com
+			    monit_smtp_password: #{SecureRandom.hex(16)}
 			  minioone:
   			    access_key: #{SecureRandom.hex(8)}
   			    secret_key: #{SecureRandom.hex(16)}
@@ -66,12 +72,19 @@ module SmartMachine
 			    database_name: #{SecureRandom.hex(8)}
 			  redisone:
 			    password: #{SecureRandom.hex(16)}
+			  roundcubeone:
+			    database_user: #{SecureRandom.hex(8)}
+			    database_pass: #{SecureRandom.hex(16)}
+			    database_name: #{SecureRandom.hex(8)}
 			  nextcloudone:
 			    admin_user: #{SecureRandom.hex(8)}
 			    admin_password: #{SecureRandom.hex(16)}
 			    mysql_user: #{SecureRandom.hex(8)}
 			    mysql_password: #{SecureRandom.hex(16)}
 			    mysql_database_name: #{SecureRandom.hex(8)}
+			  terminalone:
+			    username: #{SecureRandom.hex(8)}
+			    password: #{SecureRandom.hex(16)}
 			YAML
     end
 

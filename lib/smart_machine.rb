@@ -23,15 +23,21 @@ require 'smart_machine/buildpackers/buildpacker'
 require 'smart_machine/buildpackers/rails'
 
 require 'smart_machine/grids/elasticsearch'
+require 'smart_machine/grids/emailer'
 require 'smart_machine/grids/minio'
 require 'smart_machine/grids/mysql'
 require 'smart_machine/grids/nextcloud'
 require 'smart_machine/grids/nginx'
+require 'smart_machine/grids/phpmyadmin'
 require 'smart_machine/grids/prereceiver'
 require 'smart_machine/grids/redis'
-# require 'smart_machine/grids/scheduler'
+require 'smart_machine/grids/roundcube'
 # require 'smart_machine/grids/solr'
+require 'smart_machine/grids/terminal/wetty'
+require 'smart_machine/grids/terminal'
 require 'smart_machine/grids/wireguard'
+
+require 'smart_machine/machines/network'
 
 module SmartMachine
   class Error < StandardError; end
