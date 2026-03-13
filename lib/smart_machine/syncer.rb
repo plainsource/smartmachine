@@ -64,6 +64,9 @@ module SmartMachine
         'grids/elasticsearch',
         'grids/elasticsearch/***',
 
+        'grids/emailer',
+        'grids/emailer/***',
+
         'grids/minio',
         'grids/minio/***',
 
@@ -103,11 +106,17 @@ module SmartMachine
         'bin/smartmachine',
 
         'config',
+        'config/emailer',
+        'config/emailer/***',
         'config/mysql',
         'config/mysql/schedule.rb',
         'config/phpmyadmin',
         'config/phpmyadmin/***',
+        'config/roundcube',
+        'config/roundcube/***',
         'config/credentials.yml.enc',
+        'config/emailer.yml',
+        'config/engine.yml',
         'config/environment.rb',
         'config/elasticsearch.yml',
         'config/minio.yml',
@@ -117,6 +126,7 @@ module SmartMachine
         'config/phpmyadmin.yml',
         'config/prereceiver.yml',
         'config/redis.yml',
+        'config/roundcube.yml',
         'config/terminal.yml',
 
         'grids',

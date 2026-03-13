@@ -91,8 +91,8 @@ module SmartMachine
 		  poppler-utils && \
               rm -rf /var/lib/apt/lists/* && \
               # ImageMagick 7. Remove this after its dependency is gone from ruby on rails.
-              cd /opt && wget https://download.imagemagick.org/archive/releases/ImageMagick-7.1.1-29.tar.gz && \
-                tar xvzf ImageMagick-7.1.1-29.tar.gz && \
+              cd /opt && wget https://download.imagemagick.org/archive/releases/ImageMagick-7.1.1-29.tar.xz && \
+                tar xvJf ImageMagick-7.1.1-29.tar.xz && \
                 cd ImageMagick-7.1.1-29 && \
                 ./configure && \
                 make && \

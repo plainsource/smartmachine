@@ -77,6 +77,13 @@ module SmartMachine
       # puts 'You may be prompted to make a menu selection when the Grub package is updated on Ubuntu. If prompted, select keep the local version currently installed.'
 
       # dpkg-reconfigure tzdata
+      # debconf-set-selections <<EOF
+      # tzdata tzdata/Areas select Asia
+      # tzdata tzdata/Areas seen true
+      # tzdata tzdata/Zones/Asia select Kolkata
+      # tzdata tzdata/Zones/Asia seen true
+      # EOF
+      # dpkg-reconfigure -fnoninteractive tzdata
       # date
 
       # hostnamectl set-hostname SmartMachine.credentials.machine[:name]

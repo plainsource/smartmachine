@@ -35,10 +35,11 @@ Gem::Specification.new do |s|
   }
 
   s.add_dependency "net-ssh", "~> 6.1"
-  s.add_dependency 'ed25519', '>= 1.2', '< 2.0' # required by net-ssh https://github.com/net-ssh/net-ssh/issues/565
+  s.add_dependency 'ed25519', '>= 1.2', '<= 1.3.0' # required by net-ssh to work with ruby 2.7.7 and https://github.com/net-ssh/net-ssh/issues/565
   s.add_dependency 'bcrypt_pbkdf', '>= 1.0', '< 2.0' # required by net-ssh https://github.com/net-ssh/net-ssh/issues/565
   s.add_dependency "bcrypt", "~> 3.1", ">= 3.1.13"
-  s.add_dependency "activesupport", "~> 6.0"
+  s.add_dependency "zeitwerk", "~> 2.6", "<= 2.6.18" # required by activesupport 6.1.7.8 to work with ruby 2.7.7. Remove this line if upgrading ruby and activesupport to latest version.
+  s.add_dependency "activesupport", "~> 6.0", "<= 6.1.7.8"
   s.add_dependency "thor", '~> 1.0', '>= 1.0.1'
   s.add_dependency "bundler", '>= 2.1.4', "< 3.0.0"
   s.add_dependency "whenever", "~> 1.0"
