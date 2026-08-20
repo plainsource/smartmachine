@@ -11,10 +11,10 @@ redisone:
   # modules: []
 
 # redistwo:
-#   image: "redis:6.2.6-alpine3.15"
+#   image: "redislabs/redismod:latest"
 #   port: 6380
 #   password: <%= SmartMachine.credentials.dig(:redistwo, :password) %>
 #   appendonly: "yes"
-#   maxmemory: 250MB
-#   maxmemory_policy: allkeys-lfu
-#   modules: []
+#   maxmemory: 2GB
+#   maxmemory_policy: noeviction
+#   modules: ["redisearch", "rejson"]
